@@ -9,17 +9,22 @@ html, body {
     padding: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
     background: #0b3c5d;
     font-family: Arial, sans-serif;
     color: white;
+    overflow: hidden;
 }
 
-/* Main layout */
-.container {
+/* Border frame */
+.frame {
+    box-sizing: border-box;
+    width: 92vw;
+    height: 88vh;
+    margin: auto;
+    border: 6px solid #f4d03f;
+    border-radius: 30px;
     display: flex;
-    width: 100%;
-    height: 100%;
+    background: #0b3c5d;
 }
 
 /* LEFT: image */
@@ -32,13 +37,10 @@ html, body {
 }
 
 .left img {
-    max-height: 85vh;
+    max-height: 100%;
     max-width: 100%;
     object-fit: contain;
-    border-radius: 30px;
-
-    /* EXIF orientation fix */
-    image-orientation: from-image;
+    border-radius: 25px;
 }
 
 /* RIGHT: text */
@@ -51,7 +53,7 @@ html, body {
 }
 
 .right h1 {
-    font-size: 80px;
+    font-size: 75px;
     margin-bottom: 50px;
 }
 
@@ -68,7 +70,7 @@ html, body {
 
 <body>
 
-<div class="container">
+<div class="frame">
 
     <div class="left">
         <img src="energetic.jpg" alt="Samanyu">
