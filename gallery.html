@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Study Time</title>
+<style>
+body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+}
+
+#slide {
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+}
+
+.nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 90px;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    user-select: none;
+    padding: 20px;
+}
+
+#prev { left: 20px; }
+#next { right: 20px; }
+
+.nav:hover {
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<img id="slide">
+
+<div id="prev" class="nav" onclick="prevImage()">⬅️</div>
+<div id="next" class="nav" onclick="nextImage()">➡️</div>
+
+<script>
+const images = [
+  "objects1.png",
+  "fruits1.png",
+  "fruits2.png",
+  "digits1.png",
+  "fruits1.jpg",
+  "veg2.jpg",
+  "veg1.jpg",
+  "vehicle1.png"
+];
+
+let i = 0;
+const slide = document.getElementById("slide");
+slide.src = images[i];
+
+function nextImage() {
+  i = (i + 1) % images.length;
+  slide.src = images[i];
+}
+
+function prevImage() {
+  i = (i - 1 + images.length) % images.length;
+  slide.src = images[i];
+}
+</script>
+
+</body>
+</html>
