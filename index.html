@@ -10,30 +10,47 @@ body {
     color: white;
     font-family: Arial, sans-serif;
     height: 100vh;
+}
+
+/* Main split layout */
+.container {
+    display: flex;
+    height: 100%;
+}
+
+/* LEFT: image */
+.left {
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.left img {
+    height: 85vh;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 30px;
+}
+
+/* RIGHT: text + button */
+.right {
+    flex: 2;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-/* Child photo */
-#welcome-img {
-    max-width: 60vw;
-    max-height: 50vh;
-    border-radius: 30px;
-    margin-bottom: 30px;
+.right h1 {
+    font-size: 90px;
+    margin-bottom: 60px;
 }
 
-/* Name */
-h1 {
-    font-size: 80px;
-    margin: 20px 0 40px 0;
-}
-
-/* Start button */
-button {
+.right button {
     font-size: 60px;
-    padding: 25px 80px;
+    padding: 30px 90px;
     border-radius: 25px;
     border: none;
     background: #f4d03f;
@@ -44,13 +61,20 @@ button {
 
 <body>
 
-<img id="welcome-img" src="energetic.jpg" alt="Samanyu">
+<div class="container">
 
-<h1>SAMANYU 🌟</h1>
+    <div class="left">
+        <img src="energetic.jpg" alt="Samanyu">
+    </div>
 
-<button onclick="location.href='gallery.html'">
-    START ▶️
-</button>
+    <div class="right">
+        <h1>SAMANYU 🌟</h1>
+        <button onclick="location.href='gallery.html'">
+            START ▶️
+        </button>
+    </div>
+
+</div>
 
 </body>
 </html>
