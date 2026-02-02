@@ -6,56 +6,39 @@
 <style>
 body {
     margin: 0;
-    background: #000;
-}
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-.gallery img {
-    width: 100%;
-    border-radius: 20px;
-    cursor: pointer;
-}
-
-/* Full screen viewer */
-.viewer {
-    display: none;
-    position: fixed;
-    inset: 0;
     background: black;
-    align-items: center;
-    justify-content: center;
 }
-.viewer img {
-    width: 100%;
-    height: 100%;
+img {
+    width: 100vw;
+    height: 100vh;
     object-fit: contain;
 }
 </style>
 </head>
 
-<body>
+<body onclick="nextImage()">
 
-<div class="gallery">
-    <img src="fruits1.png" onclick="show(this.src)">
-    <img src="fruits2.png" onclick="show(this.src)">
-    <img src="digits1.png" onclick="show(this.src)">
-</div>
-
-<div class="viewer" id="viewer" onclick="hide()">
-    <img id="big">
-</div>
+<img id="slide">
 
 <script>
-function show(src){
-    document.getElementById("big").src = src;
-    document.getElementById("viewer").style.display = "flex";
-}
-function hide(){
-    document.getElementById("viewer").style.display = "none";
+const images = [
+  "objects1.png",
+  "fruits1.png",
+  "fruits2.png",
+  "digits1.png",
+  "fruits1.jpg",
+  "veg2.jpg",
+  "veg1.jpg",
+  "vehicle1.png"
+];
+
+let i = 0;
+const slide = document.getElementById("slide");
+slide.src = images[i];
+
+function nextImage() {
+  i = (i + 1) % images.length;
+  slide.src = images[i];
 }
 </script>
 
