@@ -2,81 +2,55 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Study Time</title>
+<title>Welcome Samanyu</title>
 <style>
 body {
     margin: 0;
-    background: black;
-    overflow: hidden;
-}
-
-/* Fullscreen image */
-#slide {
-    width: 100vw;
-    height: 100vh;
-    object-fit: contain;
-}
-
-/* Arrow buttons */
-.nav {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 90px;
-    color: rgba(255,255,255,0.8);
-    cursor: pointer;
-    user-select: none;
-    padding: 20px;
-}
-
-#prev {
-    left: 20px;
-}
-
-#next {
-    right: 20px;
-}
-
-.nav:hover {
+    background: #0b3c5d;
     color: white;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Child photo */
+#welcome-img {
+    max-width: 60vw;
+    max-height: 50vh;
+    border-radius: 30px;
+    margin-bottom: 30px;
+}
+
+/* Name */
+h1 {
+    font-size: 80px;
+    margin: 20px 0 40px 0;
+}
+
+/* Start button */
+button {
+    font-size: 60px;
+    padding: 25px 80px;
+    border-radius: 25px;
+    border: none;
+    background: #f4d03f;
+    cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<img id="slide">
+<img id="welcome-img" src="welcome.png" alt="Samanyu">
 
-<div id="prev" class="nav" onclick="prevImage()">⬅️</div>
-<div id="next" class="nav" onclick="nextImage()">➡️</div>
+<h1>SAMANYU 🌟</h1>
 
-<script>
-const images = [
-  "energetic.jpg",  
-  "objects1.png",
-  "fruits1.png",
-  "fruits2.png",
-  "digits1.png",
-  "fruits1.jpg",
-  "veg2.jpg",
-  "veg1.jpg",
-  "vehicle1.png"
-];
-
-let i = 0;
-const slide = document.getElementById("slide");
-slide.src = images[i];
-
-function nextImage() {
-  i = (i + 1) % images.length;
-  slide.src = images[i];
-}
-
-function prevImage() {
-  i = (i - 1 + images.length) % images.length;
-  slide.src = images[i];
-}
-</script>
+<button onclick="location.href='gallery.html'">
+    START ▶️
+</button>
 
 </body>
 </html>
