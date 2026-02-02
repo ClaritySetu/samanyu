@@ -7,18 +7,48 @@
 body {
     margin: 0;
     background: black;
+    overflow: hidden;
 }
-img {
+
+/* Fullscreen image */
+#slide {
     width: 100vw;
     height: 100vh;
     object-fit: contain;
 }
+
+/* Arrow buttons */
+.nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 90px;
+    color: rgba(255,255,255,0.8);
+    cursor: pointer;
+    user-select: none;
+    padding: 20px;
+}
+
+#prev {
+    left: 20px;
+}
+
+#next {
+    right: 20px;
+}
+
+.nav:hover {
+    color: white;
+}
 </style>
 </head>
 
-<body onclick="nextImage()">
+<body>
 
 <img id="slide">
+
+<div id="prev" class="nav" onclick="prevImage()">⬅️</div>
+<div id="next" class="nav" onclick="nextImage()">➡️</div>
 
 <script>
 const images = [
@@ -38,6 +68,11 @@ slide.src = images[i];
 
 function nextImage() {
   i = (i + 1) % images.length;
+  slide.src = images[i];
+}
+
+function prevImage() {
+  i = (i - 1 + images.length) % images.length;
   slide.src = images[i];
 }
 </script>
