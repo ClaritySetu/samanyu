@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Interior Layout - Cupboard Wall Dimensions</title>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: sans-serif; }
+        canvas { display: block; }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <b>Room Visualization</b><br/>
+        Drag to rotate | Scroll to zoom | Pan with right-click
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf5f5f5);
+
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.set(150, 250, 150);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target.set(65, 0, -81);
+        controls.update();
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(100, 200, 50);
+        scene.add(directionalLight);
+
+        const width = 130;  
+        const depth = 162;  
+        const height = 108; 
+        const wallThickness = 4;
+
+        const room = new THREE.Group();
+        scene.add(room);
+
+        function createBox(w, h, d, color, opacity = 1.0) {
+            const geometry = new THREE.BoxGeometry(w, h, d);
+            const material = new THREE.MeshLambertMaterial({ 
+                color: color, 
+                transparent: opacity < 1.0, 
+                opacity: opacity 
+            });
+            return new THREE.Mesh(geometry, material);
+        }
+
+        // Floor
+        const floor = createBox(width, 2, depth, 0xdddddd);
+        floor.position.set(width/2, -1, -depth/2);
+        room.add(floor);
+
+        // Walls
+        const wallAB = createBox(wallThickness, height, depth, 0xe0e0e0, 0.3);
+        wallAB.position.set(-wallThickness/2, height/2, -depth/2);
+        room.add(wallAB);
+
+        const wallAD = createBox(width, height, wallThickness, 0xe0e0e0, 0.3);
+        wallAD.position.set(width/2, height/2, wallThickness/2);
+        room.add(wallAD);
+
+        const wallBC = createBox(width, height, wallThickness, 0xe0e0e0, 0.3);
+        wallBC.position.set(width/2, height/2, -depth - wallThickness/2);
+        room.add(wallBC);
+
+        const wallCD = createBox(wallThickness, height, depth, 0xe0e0e0, 0.3);
+        wallCD.position.set(width + wallThickness/2, height/2, -depth/2);
+        room.add(wallCD);
+
+        // French Window
+        const windowWidth = 86;
+        const frenchWindow = createBox(windowWidth, height * 0.8, wallThickness * 1.5, 0x87CEEB, 0.6);
+        frenchWindow.position.set(width/2, height/2, -depth - wallThickness/2);
+        room.add(frenchWindow);
+
+        // Column
+        const columnSize = 12;
+        const column = createBox(columnSize, height, columnSize, 0x888888);
+        column.position.set(width - columnSize/2, height/2, -depth + columnSize/2);
+        room.add(column);
+
+        // Switchboards
+        const s1 = createBox(2, 6, 4, 0x333333);
+        s1.position.set(wallThickness/2, 48, -36); 
+        room.add(s1);
+
+        const s2 = createBox(2, 6, 4, 0x333333);
+        s2.position.set(wallThickness/2, 48, -118);
+        room.add(s2);
+
+        const s4 = createBox(4, 6, 2, 0x333333);
+        s4.position.set(29, 48, -wallThickness/2);
+        room.add(s4);
+
+        const s3 = createBox(2, 6, 4, 0x333333);
+        s3.position.set(width - wallThickness/2, 48, -100); 
+        room.add(s3);
+
+        // Bed (84 L x 72 W)
+        const bed = createBox(84, 20, 72, 0x4CAF50);
+        bed.position.set(42 + wallThickness, 10, -77); 
+        room.add(bed);
+
+        // Doors
+        const doorAD = createBox(36, 84, wallThickness*1.5, 0x8B4513);
+        doorAD.position.set(50, 42, 0); 
+        room.add(doorAD);
+
+        const doorCD = createBox(wallThickness*1.5, 84, 36, 0x8B4513);
+        doorCD.position.set(width, 42, -20); 
+        room.add(doorCD);
+
+        // --- CUPBOARDS ---
+        const cupboard1 = createBox(24, 96, 36, 0x795548); 
+        cupboard1.position.set(12, 48, -18);
+        room.add(cupboard1);
+
+        const cupboard2 = createBox(24, 96, 72, 0x795548);
+        cupboard2.position.set(118, 48, -126);
+        room.add(cupboard2);
+
+        // --- DRAFTING DIMENSION HELPER (FLOOR) ---
+        function addDraftingDimension(p1, p2, offsetVec, labelText, rotationZ = 0) {
+            const p1Vec = new THREE.Vector3(p1.x, 0.5, p1.z);
+            const p2Vec = new THREE.Vector3(p2.x, 0.5, p2.z);
+            const offset = new THREE.Vector3(offsetVec.x, 0, offsetVec.z);
+
+            const dimStart = new THREE.Vector3().addVectors(p1Vec, offset);
+            const dimEnd = new THREE.Vector3().addVectors(p2Vec, offset);
+
+            const material = new THREE.LineBasicMaterial({ color: 0x555555 });
+
+            const geomMain = new THREE.BufferGeometry().setFromPoints([dimStart, dimEnd]);
+            room.add(new THREE.Line(geomMain, material));
+
+            const geomExt1 = new THREE.BufferGeometry().setFromPoints([p1Vec, dimStart]);
+            room.add(new THREE.Line(geomExt1, material));
+
+            const geomExt2 = new THREE.BufferGeometry().setFromPoints([p2Vec, dimEnd]);
+            room.add(new THREE.Line(geomExt2, material));
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#f5f5f5'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.font = 'bold 32px sans-serif';
+            ctx.fillStyle = '#333333';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(labelText, canvas.width / 2, canvas.height / 2);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const planeGeo = new THREE.PlaneGeometry(40, 10);
+            const planeMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+            const textMesh = new THREE.Mesh(planeGeo, planeMat);
+            
+            const mid = new THREE.Vector3().addVectors(dimStart, dimEnd).multiplyScalar(0.5);
+            textMesh.position.set(mid.x, 0.6, mid.z); 
+            textMesh.rotation.x = -Math.PI / 2;
+            textMesh.rotation.z = rotationZ;
+
+            room.add(textMesh);
+        }
+
+        // --- DRAFTING DIMENSION HELPER (VERTICAL WALL) ---
+        function addVerticalWallDimension(p1, p2, offsetHeight, labelText) {
+            const surfaceX = p1.x + 2.5; 
+            const dimStart = new THREE.Vector3(surfaceX, p1.y + offsetHeight, p1.z);
+            const dimEnd = new THREE.Vector3(surfaceX, p2.y + offsetHeight, p2.z);
+            const material = new THREE.LineBasicMaterial({ color: 0x555555 });
+
+            const geomMain = new THREE.BufferGeometry().setFromPoints([dimStart, dimEnd]);
+            room.add(new THREE.Line(geomMain, material));
+
+            const geomExt1 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(surfaceX, p1.y, p1.z), dimStart]);
+            room.add(new THREE.Line(geomExt1, material));
+
+            const geomExt2 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(surfaceX, p2.y, p2.z), dimEnd]);
+            room.add(new THREE.Line(geomExt2, material));
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#e0e0e0'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.font = 'bold 32px sans-serif';
+            ctx.fillStyle = '#333333';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(labelText, canvas.width / 2, canvas.height / 2);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const planeGeo = new THREE.PlaneGeometry(40, 10);
+            const planeMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+            const textMesh = new THREE.Mesh(planeGeo, planeMat);
+            
+            const mid = new THREE.Vector3().addVectors(dimStart, dimEnd).multiplyScalar(0.5);
+            textMesh.position.set(surfaceX + 0.1, mid.y, mid.z);
+            textMesh.rotation.y = Math.PI / 2; 
+
+            room.add(textMesh);
+        }
+
+        // --- DRAFTING DIMENSION HELPER (CUPBOARD FACES) ---
+        function addVerticalFaceDimension(start, end, labelText, rotationY) {
+            const material = new THREE.LineBasicMaterial({ color: 0xffffff }); // White line
+
+            const geomMain = new THREE.BufferGeometry().setFromPoints([start, end]);
+            room.add(new THREE.Line(geomMain, material));
+
+            const tickHeight = new THREE.Vector3(0, 2, 0);
+            const geomTick1 = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3().subVectors(start, tickHeight),
+                new THREE.Vector3().addVectors(start, tickHeight)
+            ]);
+            room.add(new THREE.Line(geomTick1, material));
+            
+            const geomTick2 = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3().subVectors(end, tickHeight),
+                new THREE.Vector3().addVectors(end, tickHeight)
+            ]);
+            room.add(new THREE.Line(geomTick2, material));
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#795548'; // Cupboard brown to break the line
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.font = 'bold 32px sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(labelText, canvas.width / 2, canvas.height / 2);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const planeGeo = new THREE.PlaneGeometry(24, 6);
+            const planeMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+            const textMesh = new THREE.Mesh(planeGeo, planeMat);
+            
+            const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+            textMesh.position.copy(mid);
+            textMesh.rotation.y = rotationY;
+
+            room.add(textMesh);
+        }
+
+        // Floor Dimensions
+        addDraftingDimension({x: 0, z: 0}, {x: 130, z: 0}, {x: 0, z: 15}, "AD: 130\"", 0);
+        addDraftingDimension({x: 0, z: 0}, {x: 0, z: -162}, {x: -15, z: 0}, "AB: 162\"", Math.PI / 2);
+        
+        const windowStartX = (width - windowWidth) / 2;
+        const windowEndX = windowStartX + windowWidth;
+        addDraftingDimension({x: windowStartX, z: -162}, {x: windowEndX, z: -162}, {x: 0, z: -15}, "PQ: 86\"", 0);
+
+        // Bed Dimensions
+        addDraftingDimension({x: 4, z: -41}, {x: 88, z: -41}, {x: 0, z: 15}, "Bed L: 84\"", 0);
+        addDraftingDimension({x: 88, z: -41}, {x: 88, z: -113}, {x: 15, z: 0}, "Bed W: 72\"", Math.PI / 2);
+
+        // Vertical Wall Dimension
+        addVerticalWallDimension(s1.position, s2.position, 20, "S1-S2 Gap: 82\"");
+
+        // Cupboard 1 Dimensions (Mapped directly onto the exposed faces)
+        addVerticalFaceDimension(new THREE.Vector3(24.1, 60, -2), new THREE.Vector3(24.1, 60, -34), "36\"", Math.PI / 2); // Length side
+        addVerticalFaceDimension(new THREE.Vector3(2, 60, -36.1), new THREE.Vector3(22, 60, -36.1), "24\"", Math.PI);      // Depth side
+
+        // Cupboard 2 Dimensions (Mapped directly onto the exposed faces)
+        addVerticalFaceDimension(new THREE.Vector3(105.9, 60, -92), new THREE.Vector3(105.9, 60, -160), "72\"", -Math.PI / 2); // Length side
+        addVerticalFaceDimension(new THREE.Vector3(108, 60, -89.9), new THREE.Vector3(128, 60, -89.9), "24\"", 0);           // Depth side
+
+        // Grid Helper
+        const gridHelper = new THREE.GridHelper(200, 20);
+        gridHelper.position.set(width/2, 0, -depth/2);
+        scene.add(gridHelper);
+
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
