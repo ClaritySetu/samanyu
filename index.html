@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome Samanyu</title>
 <style>
 html, body {
@@ -20,10 +21,11 @@ html, body {
     box-sizing: border-box;
     width: 92vw;
     height: 88vh;
-    margin: auto;
+    margin: 4vh auto;
     border: 6px solid #f4d03f;
     border-radius: 30px;
     display: flex;
+    flex-wrap: wrap; /* Added for mobile responsiveness */
 }
 
 /* LEFT: canvas image */
@@ -33,12 +35,14 @@ html, body {
     justify-content: center;
     align-items: center;
     padding: 30px;
+    min-width: 300px;
 }
 
 canvas {
     max-width: 100%;
     max-height: 100%;
     border-radius: 25px;
+    background: #1a1a1a; /* Placeholder color before image loads */
 }
 
 /* RIGHT: text */
@@ -48,20 +52,63 @@ canvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    min-width: 300px;
 }
 
 .right h1 {
-    font-size: 75px;
-    margin-bottom: 40px;
+    font-size: clamp(40px, 8vw, 75px); /* Fluid typography */
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Button Container */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 80%;
+    max-width: 300px;
 }
 
 .right button {
-    font-size: 38px;
-    padding: 16px 45px;
+    font-size: 28px;
+    padding: 16px 30px;
     border-radius: 18px;
     border: none;
     background: #f4d03f;
+    color: #0b3c5d;
+    font-weight: bold;
     cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    width: 100%;
+}
+
+.right button:hover {
+    background: #d4b435;
+    transform: scale(1.05);
+}
+
+.right button.secondary {
+    background: transparent;
+    border: 3px solid #f4d03f;
+    color: #f4d03f;
+}
+
+.right button.secondary:hover {
+    background: rgba(244, 208, 63, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .frame {
+        height: auto;
+        overflow-y: auto;
+        flex-direction: column;
+        padding-bottom: 40px;
+    }
+    .right h1 {
+        font-size: 50px;
+    }
 }
 </style>
 </head>
@@ -76,26 +123,48 @@ canvas {
 
     <div class="right">
         <h1>SAMANYU 🌟</h1>
-        <button onclick="location.href='gallery.html'">
-            START ▶️
-        </button>
+        
+        <div class="button-group">
+            <button onclick="location.href='gallery.html'">
+                START ▶️
+            </button>
+            
+            <!-- New button for another page in the repo -->
+            <button class="secondary" onclick="location.href='GuestRoom.html'">
+                PROJECTS 📂
+            </button>
+        </div>
     </div>
 
 </div>
 
 <script>
 const img = new Image();
-img.src = "energetic1.jpg";   // your photo
+img.src = "energetic1.jpg";   // Ensure this file is in your repo
 
 img.onload = function () {
     const canvas = document.getElementById("photoCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Use raw pixel dimensions (no EXIF rotation)
+    // Setting canvas size to match the image resolution
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
 
     ctx.drawImage(img, 0, 0);
+};
+
+// Error handling for image loading
+img.onerror = function() {
+    const canvas = document.getElementById("photoCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 400;
+    canvas.height = 400;
+    ctx.fillStyle = "#1a1a1a";
+    ctx.fillRect(0, 0, 400, 400);
+    ctx.fillStyle = "white";
+    ctx.font = "20px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Image not found", 200, 200);
 };
 </script>
 
