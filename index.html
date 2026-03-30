@@ -95,35 +95,52 @@
 
   .page {
     position: relative; z-index: 2;
-    min-height: 100vh;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    padding: 24px 40px 80px;
+    gap: 36px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* LEFT COLUMN: photo only */
+  .left-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* RIGHT COLUMN: banner + cards stacked */
+  .right-col {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 40px 24px 120px;
-    gap: 32px;
+    gap: 20px;
+    justify-content: center;
   }
 
   .banner {
     background: white;
-    border-radius: 36px;
-    padding: 28px 48px;
+    border-radius: 28px;
+    padding: 20px 32px;
     text-align: center;
     border: 4px solid var(--navy);
     box-shadow: 6px 6px 0 var(--navy);
     animation: pop-in 0.6s cubic-bezier(.34,1.56,.64,1) both;
-    max-width: 700px; width: 100%;
+    width: 100%;
   }
 
   .banner .stars {
-    font-size: 22px;
+    font-size: 18px;
     letter-spacing: 6px;
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .banner h1 {
     font-family: 'Fredoka One', cursive;
-    font-size: clamp(38px, 8vw, 72px);
+    font-size: clamp(30px, 4.5vw, 56px);
     color: var(--coral);
     line-height: 1;
   }
@@ -131,9 +148,9 @@
   .banner h1 span { color: var(--purple); }
 
   .banner p {
-    font-size: clamp(14px, 2.5vw, 18px);
+    font-size: clamp(13px, 1.6vw, 16px);
     color: #666;
-    margin-top: 8px;
+    margin-top: 6px;
     font-weight: 600;
   }
 
@@ -153,8 +170,8 @@
   .frame-border canvas {
     display: block;
     border-radius: 20px;
-    width: 240px;
-    height: 240px;
+    width: 220px;
+    height: 220px;
   }
 
   .photo-placeholder {
@@ -186,23 +203,23 @@
 
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    max-width: 760px; width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
     animation: pop-in 0.6s cubic-bezier(.34,1.56,.64,1) 0.3s both;
   }
 
   .card {
     background: white;
-    border-radius: 28px;
-    padding: 28px 20px;
+    border-radius: 22px;
+    padding: 18px 12px;
     text-align: center;
     border: 4px solid var(--navy);
     box-shadow: 5px 5px 0 var(--navy);
     cursor: pointer;
     text-decoration: none;
     display: flex; flex-direction: column;
-    align-items: center; gap: 12px;
+    align-items: center; gap: 8px;
     transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease;
     position: relative;
     overflow: hidden;
@@ -218,7 +235,7 @@
   }
 
   .card-icon {
-    font-size: 52px;
+    font-size: 38px;
     line-height: 1;
     animation: bounce-icon 2s ease-in-out infinite;
   }
@@ -289,11 +306,18 @@
     to   { opacity: 1; transform: scale(1) translateY(0); }
   }
 
-  @media (max-width: 520px) {
-    .banner { padding: 22px 24px; }
-    .cards  { grid-template-columns: 1fr 1fr; }
-    .card   { padding: 20px 12px; }
-    .sun    { width: 60px; height: 60px; top: 16px; right: 20px; }
+  @media (max-width: 620px) {
+    .page {
+      grid-template-columns: 1fr;
+      height: auto;
+      padding: 20px 16px 100px;
+      gap: 20px;
+    }
+    .left-col { justify-content: center; }
+    .frame-border canvas { width: 180px; height: 180px; }
+    .cards { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .card  { padding: 14px 8px; }
+    .sun   { width: 50px; height: 50px; top: 12px; right: 16px; }
   }
 </style>
 </head>
@@ -308,46 +332,54 @@
 
 <div class="page">
 
-  <div class="banner">
-    <span class="stars">⭐ ⭐ ⭐</span>
-    <h1>Hi, I'm <span>Samanyu!</span> 👋</h1>
-    <p>Welcome to my little corner of the internet 🌈</p>
-  </div>
-
-  <div class="photo-frame">
-    <div class="frame-border">
-      <canvas id="photoCanvas"></canvas>
+  <!-- LEFT: photo -->
+  <div class="left-col">
+    <div class="photo-frame">
+      <div class="frame-border">
+        <canvas id="photoCanvas"></canvas>
+      </div>
+      <span class="sticker sticker-1">🌟</span>
+      <span class="sticker sticker-2">🎈</span>
+      <span class="sticker sticker-3">🦋</span>
+      <span class="sticker sticker-4">🎨</span>
     </div>
-    <span class="sticker sticker-1">🌟</span>
-    <span class="sticker sticker-2">🎈</span>
-    <span class="sticker sticker-3">🦋</span>
-    <span class="sticker sticker-4">🎨</span>
   </div>
 
-  <div class="cards">
+  <!-- RIGHT: banner + cards -->
+  <div class="right-col">
 
-    <a class="card card-learn" href="gallery.html">
-      <div class="card-icon">📚</div>
-      <div class="card-title">Learning Corner</div>
-      <div class="card-desc">Fun lessons &amp; activities!</div>
-      <div class="card-tag">Let's Learn</div>
-      <div class="card-bg-circle"></div>
-    </a>
+    <div class="banner">
+      <span class="stars">⭐ ⭐ ⭐</span>
+      <h1>Hi, I'm <span>Samanyu!</span> 👋</h1>
+      <p>Welcome to my little corner of the internet 🌈</p>
+    </div>
 
-    <a class="card card-proj" href="GuestRoom.html">
-      <div class="card-icon">🚀</div>
-      <div class="card-title">My Projects</div>
-      <div class="card-desc">Cool stuff I've built!</div>
-      <div class="card-tag">Explore</div>
-      <div class="card-bg-circle"></div>
-    </a>
+    <div class="cards">
 
-    <div class="card card-home" style="cursor:default;">
-      <div class="card-icon">🏠</div>
-      <div class="card-title">Family Space</div>
-      <div class="card-desc">Made with ❤️ for family</div>
-      <div class="card-tag">Home</div>
-      <div class="card-bg-circle"></div>
+      <a class="card card-learn" href="gallery.html">
+        <div class="card-icon">📚</div>
+        <div class="card-title">Learning Corner</div>
+        <div class="card-desc">Fun lessons &amp; activities!</div>
+        <div class="card-tag">Let's Learn</div>
+        <div class="card-bg-circle"></div>
+      </a>
+
+      <a class="card card-proj" href="GuestRoom.html">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">My Projects</div>
+        <div class="card-desc">Cool stuff I've built!</div>
+        <div class="card-tag">Explore</div>
+        <div class="card-bg-circle"></div>
+      </a>
+
+      <div class="card card-home" style="cursor:default;">
+        <div class="card-icon">🏠</div>
+        <div class="card-title">Family Space</div>
+        <div class="card-desc">Made with ❤️ for family</div>
+        <div class="card-tag">Home</div>
+        <div class="card-bg-circle"></div>
+      </div>
+
     </div>
 
   </div>
