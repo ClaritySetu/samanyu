@@ -1,172 +1,386 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome Samanyu</title>
+<title>Samanyu's World!</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #0b3c5d;
-    font-family: Arial, sans-serif;
-    color: white;
-    overflow: hidden;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Border frame */
-.frame {
-    box-sizing: border-box;
-    width: 92vw;
-    height: 88vh;
-    margin: 4vh auto;
-    border: 6px solid #f4d03f;
-    border-radius: 30px;
-    display: flex;
-    flex-wrap: wrap; /* Added for mobile responsiveness */
-}
+  :root {
+    --sky:    #B8EEFF;
+    --sun:    #FFD93D;
+    --grass:  #6BCB77;
+    --coral:  #FF6B6B;
+    --purple: #C77DFF;
+    --orange: #FFA552;
+    --navy:   #1A1A4E;
+    --white:  #FFFDF7;
+  }
 
-/* LEFT: canvas image */
-.left {
-    flex: 2.5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    min-width: 300px;
-}
+  html, body {
+    width: 100%; min-height: 100vh;
+    background: var(--sky);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+  }
 
-canvas {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 25px;
-    background: #1a1a1a; /* Placeholder color before image loads */
-}
+  .sky-bg {
+    position: fixed; inset: 0;
+    background: linear-gradient(180deg, #B8EEFF 0%, #D8F4FF 60%, #C5EDDB 100%);
+    z-index: 0;
+  }
 
-/* RIGHT: text */
-.right {
-    flex: 1.5;
+  .sun {
+    position: fixed;
+    top: 30px; right: 60px;
+    width: 90px; height: 90px;
+    background: var(--sun);
+    border-radius: 50%;
+    z-index: 1;
+    box-shadow: 0 0 0 16px rgba(255,217,61,0.2), 0 0 0 32px rgba(255,217,61,0.08);
+    animation: pulse-sun 3s ease-in-out infinite;
+  }
+  @keyframes pulse-sun {
+    0%,100% { box-shadow: 0 0 0 16px rgba(255,217,61,0.2), 0 0 0 32px rgba(255,217,61,0.08); }
+    50%      { box-shadow: 0 0 0 22px rgba(255,217,61,0.25), 0 0 0 44px rgba(255,217,61,0.1); }
+  }
+
+  .cloud {
+    position: fixed;
+    background: white;
+    border-radius: 100px;
+    opacity: 0.85;
+    z-index: 1;
+    animation: float-cloud linear infinite;
+  }
+  .cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+  .c1 { width:120px; height:40px; top:80px; left:-140px; animation-duration:28s; animation-delay:0s; }
+  .c1::before { width:60px; height:60px; top:-30px; left:15px; }
+  .c1::after  { width:45px; height:45px; top:-20px; left:55px; }
+  .c2 { width:90px; height:30px; top:160px; left:-110px; animation-duration:38s; animation-delay:-14s; opacity:0.6; }
+  .c2::before { width:45px; height:45px; top:-25px; left:10px; }
+  .c2::after  { width:35px; height:35px; top:-18px; left:40px; }
+  .c3 { width:100px; height:34px; top:50px; left:-120px; animation-duration:50s; animation-delay:-25s; opacity:0.7; }
+  .c3::before { width:50px; height:50px; top:-28px; left:12px; }
+  .c3::after  { width:40px; height:40px; top:-20px; left:48px; }
+
+  @keyframes float-cloud {
+    from { transform: translateX(0); }
+    to   { transform: translateX(110vw); }
+  }
+
+  .grass {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 90px;
+    background: var(--grass);
+    z-index: 1;
+    border-radius: 60% 60% 0 0 / 30px 30px 0 0;
+  }
+  .grass::before {
+    content: '';
+    position: absolute;
+    top: -18px; left: 0; right: 0;
+    height: 36px;
+    background: #82D989;
+    border-radius: 60% 60% 0 0 / 100%;
+  }
+
+  .page {
+    position: relative; z-index: 2;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    min-width: 300px;
-}
+    padding: 40px 24px 120px;
+    gap: 32px;
+  }
 
-.right h1 {
-    font-size: clamp(40px, 8vw, 75px); /* Fluid typography */
-    margin-bottom: 30px;
+  .banner {
+    background: white;
+    border-radius: 36px;
+    padding: 28px 48px;
     text-align: center;
-}
+    border: 4px solid var(--navy);
+    box-shadow: 6px 6px 0 var(--navy);
+    animation: pop-in 0.6s cubic-bezier(.34,1.56,.64,1) both;
+    max-width: 700px; width: 100%;
+  }
 
-/* Button Container */
-.button-group {
-    display: flex;
-    flex-direction: column;
+  .banner .stars {
+    font-size: 22px;
+    letter-spacing: 6px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .banner h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(38px, 8vw, 72px);
+    color: var(--coral);
+    line-height: 1;
+  }
+
+  .banner h1 span { color: var(--purple); }
+
+  .banner p {
+    font-size: clamp(14px, 2.5vw, 18px);
+    color: #666;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  .photo-frame {
+    position: relative;
+    animation: pop-in 0.6s cubic-bezier(.34,1.56,.64,1) 0.15s both;
+  }
+
+  .frame-border {
+    background: white;
+    border-radius: 30px;
+    padding: 12px;
+    border: 4px solid var(--navy);
+    box-shadow: 6px 6px 0 var(--navy);
+  }
+
+  .frame-border canvas {
+    display: block;
+    border-radius: 20px;
+    width: 240px;
+    height: 240px;
+  }
+
+  .photo-placeholder {
+    width: 240px; height: 240px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #FFD93D 0%, #FF6B6B 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 10px;
+  }
+  .photo-placeholder .avatar-emoji { font-size: 80px; line-height: 1; }
+  .photo-placeholder p { font-size: 13px; color: white; font-weight: 800; }
+
+  .sticker {
+    position: absolute;
+    font-size: 32px;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.15));
+    animation: wobble 2.5s ease-in-out infinite;
+  }
+  .sticker-1 { top: -20px; left: -20px; animation-delay: 0s; }
+  .sticker-2 { top: -18px; right: -18px; animation-delay: -0.6s; }
+  .sticker-3 { bottom: -18px; left: -16px; animation-delay: -1.2s; }
+  .sticker-4 { bottom: -20px; right: -20px; animation-delay: -1.8s; }
+
+  @keyframes wobble {
+    0%,100% { transform: rotate(-8deg) scale(1); }
+    50%      { transform: rotate(8deg) scale(1.15); }
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    width: 80%;
-    max-width: 300px;
-}
+    max-width: 760px; width: 100%;
+    animation: pop-in 0.6s cubic-bezier(.34,1.56,.64,1) 0.3s both;
+  }
 
-.right button {
-    font-size: 28px;
-    padding: 16px 30px;
-    border-radius: 18px;
-    border: none;
-    background: #f4d03f;
-    color: #0b3c5d;
-    font-weight: bold;
+  .card {
+    background: white;
+    border-radius: 28px;
+    padding: 28px 20px;
+    text-align: center;
+    border: 4px solid var(--navy);
+    box-shadow: 5px 5px 0 var(--navy);
     cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-    width: 100%;
-}
+    text-decoration: none;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 12px;
+    transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
 
-.right button:hover {
-    background: #d4b435;
-    transform: scale(1.05);
-}
+  .card:hover {
+    transform: translateY(-8px) rotate(-1deg);
+    box-shadow: 8px 12px 0 var(--navy);
+  }
+  .card:active {
+    transform: translateY(2px);
+    box-shadow: 3px 3px 0 var(--navy);
+  }
 
-.right button.secondary {
-    background: transparent;
-    border: 3px solid #f4d03f;
-    color: #f4d03f;
-}
+  .card-icon {
+    font-size: 52px;
+    line-height: 1;
+    animation: bounce-icon 2s ease-in-out infinite;
+  }
+  .card:nth-child(2) .card-icon { animation-delay: -0.5s; }
+  .card:nth-child(3) .card-icon { animation-delay: -1s; }
 
-.right button.secondary:hover {
-    background: rgba(244, 208, 63, 0.1);
-}
+  @keyframes bounce-icon {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .frame {
-        height: auto;
-        overflow-y: auto;
-        flex-direction: column;
-        padding-bottom: 40px;
-    }
-    .right h1 {
-        font-size: 50px;
-    }
-}
+  .card-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .card-tag {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 5px 14px;
+    border-radius: 100px;
+    color: white;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .card-bg-circle {
+    position: absolute;
+    bottom: -20px; right: -20px;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    opacity: 0.1;
+  }
+
+  .card-learn .card-tag        { background: var(--orange); }
+  .card-learn .card-bg-circle  { background: var(--orange); }
+  .card-proj  .card-tag        { background: var(--purple); }
+  .card-proj  .card-bg-circle  { background: var(--purple); }
+  .card-home  .card-tag        { background: var(--grass); }
+  .card-home  .card-bg-circle  { background: var(--grass); }
+
+  .footer-strip {
+    position: fixed;
+    bottom: 8px; left: 0; right: 0;
+    height: 52px; z-index: 3;
+    display: flex; align-items: center; justify-content: center;
+    gap: 24px;
+  }
+
+  .footer-strip span {
+    font-size: 24px;
+    animation: bounce-icon 1.8s ease-in-out infinite;
+  }
+  .footer-strip span:nth-child(2) { animation-delay: -0.6s; }
+  .footer-strip span:nth-child(3) { animation-delay: -1.2s; }
+
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  @media (max-width: 520px) {
+    .banner { padding: 22px 24px; }
+    .cards  { grid-template-columns: 1fr 1fr; }
+    .card   { padding: 20px 12px; }
+    .sun    { width: 60px; height: 60px; top: 16px; right: 20px; }
+  }
 </style>
 </head>
-
 <body>
 
-<div class="frame">
+<div class="sky-bg"></div>
+<div class="sun"></div>
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="cloud c3"></div>
+<div class="grass"></div>
 
-    <div class="left">
-        <canvas id="photoCanvas"></canvas>
+<div class="page">
+
+  <div class="banner">
+    <span class="stars">⭐ ⭐ ⭐</span>
+    <h1>Hi, I'm <span>Samanyu!</span> 👋</h1>
+    <p>Welcome to my little corner of the internet 🌈</p>
+  </div>
+
+  <div class="photo-frame">
+    <div class="frame-border">
+      <canvas id="photoCanvas"></canvas>
+    </div>
+    <span class="sticker sticker-1">🌟</span>
+    <span class="sticker sticker-2">🎈</span>
+    <span class="sticker sticker-3">🦋</span>
+    <span class="sticker sticker-4">🎨</span>
+  </div>
+
+  <div class="cards">
+
+    <a class="card card-learn" href="gallery.html">
+      <div class="card-icon">📚</div>
+      <div class="card-title">Learning Corner</div>
+      <div class="card-desc">Fun lessons &amp; activities!</div>
+      <div class="card-tag">Let's Learn</div>
+      <div class="card-bg-circle"></div>
+    </a>
+
+    <a class="card card-proj" href="GuestRoom.html">
+      <div class="card-icon">🚀</div>
+      <div class="card-title">My Projects</div>
+      <div class="card-desc">Cool stuff I've built!</div>
+      <div class="card-tag">Explore</div>
+      <div class="card-bg-circle"></div>
+    </a>
+
+    <div class="card card-home" style="cursor:default;">
+      <div class="card-icon">🏠</div>
+      <div class="card-title">Family Space</div>
+      <div class="card-desc">Made with ❤️ for family</div>
+      <div class="card-tag">Home</div>
+      <div class="card-bg-circle"></div>
     </div>
 
-    <div class="right">
-        <h1>SAMANYU 🌟</h1>
-        
-        <div class="button-group">
-            <button onclick="location.href='gallery.html'">
-                START ▶️
-            </button>
-            
-            <!-- New button for another page in the repo -->
-            <button class="secondary" onclick="location.href='GuestRoom.html'">
-                PROJECTS 📂
-            </button>
-        </div>
-    </div>
+  </div>
 
 </div>
 
+<div class="footer-strip">
+  <span>🌸</span><span>🌻</span><span>🌺</span>
+</div>
+
 <script>
-const img = new Image();
-img.src = "energetic1.jpg";   // Ensure this file is in your repo
+  const canvas = document.getElementById('photoCanvas');
+  const ctx    = canvas.getContext('2d');
+  const img    = new Image();
+  img.src = 'energetic1.jpg';
 
-img.onload = function () {
-    const canvas = document.getElementById("photoCanvas");
-    const ctx = canvas.getContext("2d");
+  img.onload = function() {
+    const size = 240;
+    canvas.width = size; canvas.height = size;
+    const s  = Math.min(img.naturalWidth, img.naturalHeight);
+    const sx = (img.naturalWidth  - s) / 2;
+    const sy = (img.naturalHeight - s) / 2;
+    ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
+  };
 
-    // Setting canvas size to match the image resolution
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-
-    ctx.drawImage(img, 0, 0);
-};
-
-// Error handling for image loading
-img.onerror = function() {
-    const canvas = document.getElementById("photoCanvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = 400;
-    canvas.height = 400;
-    ctx.fillStyle = "#1a1a1a";
-    ctx.fillRect(0, 0, 400, 400);
-    ctx.fillStyle = "white";
-    ctx.font = "20px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("Image not found", 200, 200);
-};
+  img.onerror = function() {
+    canvas.remove();
+    document.querySelector('.frame-border').innerHTML = `
+      <div class="photo-placeholder">
+        <span class="avatar-emoji">🧒</span>
+        <p>That's me!</p>
+      </div>`;
+  };
 </script>
-
 </body>
 </html>
