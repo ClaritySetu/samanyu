@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phonics Fun! 🎙️</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a1a4e;
+    --yellow: #FFD93D;
+    --sky: #e0f7fa;
+    --green: #66BB6A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--sky);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  header { text-align: center; margin-bottom: 20px; }
+  h1 { font-family: 'Fredoka One', cursive; color: var(--navy); font-size: 2.5rem; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .letter-card {
+    background: white;
+    border: 3px solid var(--navy);
+    border-radius: 20px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--navy);
+    transition: all 0.15s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Letter styling */
+  .char {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.8rem;
+    color: var(--navy);
+    transition: transform 0.3s;
+  }
+
+  /* Emoji styling - Hidden by default */
+  .emoji {
+    font-size: 0;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-top: -10px;
+  }
+
+  /* Revealed state */
+  .letter-card.revealed {
+    background-color: #fffde7;
+    border-color: var(--green);
+  }
+
+  .letter-card.revealed .char {
+    font-size: 1.4rem;
+    transform: translateY(-5px);
+  }
+
+  .letter-card.revealed .emoji {
+    font-size: 2.5rem;
+    opacity: 1;
+  }
+
+  .letter-card:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--navy);
+  }
+
+  .controls {
+    margin-top: 30px;
+    background: white;
+    padding: 10px 25px;
+    border-radius: 50px;
+    border: 2px solid var(--navy);
+    font-weight: 900;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ABC Phonics</h1>
+  <p>Click a letter to hear its sound and see a surprise!</p>
+</header>
+
+<div class="grid" id="alphabetGrid"></div>
+
+<div class="controls">
+  Volume: <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+</div>
+
+<script>
+  const data = [
+    { l: 'A', p: 'ah', e: '🍎' }, { l: 'B', p: 'buh', e: '🎈' }, { l: 'C', p: 'kuh', e: '🐱' },
+    { l: 'D', p: 'duh', e: '🐶' }, { l: 'E', p: 'eh', e: '🥚' }, { l: 'F', p: 'ff', e: '🐟' },
+    { l: 'G', p: 'guh', e: '🍇' }, { l: 'H', p: 'huh', e: '🏠' }, { l: 'I', p: 'ih', e: '🍦' },
+    { l: 'J', p: 'juh', e: '🏺' }, { l: 'K', p: 'kuh', e: '🪁' }, { l: 'L', p: 'll', e: '🦁' },
+    { l: 'M', p: 'mm', e: '🌙' }, { l: 'N', p: 'nn', e: '☁️' }, { l: 'O', p: 'oh', e: '🐙' },
+    { l: 'P', p: 'puh', e: '🍕' }, { l: 'Q', p: 'kwuh', e: '👸' }, { l: 'R', p: 'rr', e: '🚀' },
+    { l: 'S', p: 'ss', e: '☀️' }, { l: 'T', p: 'tuh', e: '🚂' }, { l: 'U', p: 'uh', e: '☂️' },
+    { l: 'V', p: 'vv', e: '🎻' }, { l: 'W', p: 'wuh', e: '🐳' }, { l: 'X', p: 'ks', e: '🎷' },
+    { l: 'Y', p: 'yuh', e: '🪀' }, { l: 'Z', p: 'zz', e: '🦓' }
+  ];
+
+  const grid = document.getElementById('alphabetGrid');
+  const volumeInput = document.getElementById('volume');
+
+  data.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'letter-card';
+    card.innerHTML = `
+      <span class="char">${item.l}</span>
+      <span class="emoji">${item.e}</span>
+    `;
+    
+    card.onclick = () => {
+      // Toggle revealed class
+      card.classList.add('revealed');
+      speakPhonic(item.p);
+      
+      // Optional: Reset other cards? 
+      // For a 4-year-old, keeping them revealed is usually better for visual tracking.
+    };
+    grid.appendChild(card);
+  });
+
+  function speakPhonic(phoneme) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(phoneme);
+    utterance.volume = volumeInput.value;
+    utterance.rate = 0.7; 
+    utterance.pitch = 1.2;
+    window.speechSynthesis.speak(utterance);
+  }
+</script>
+
+</body>
+</html>
