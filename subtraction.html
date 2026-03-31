@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>➖ Subtraction Fun!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-top: #a8dff5;
+    --sky-bot: #d4f1ff;
+    --grass: #5ec44a;
+    --grass-dark: #46a834;
+    --navy: #1a1a4e;
+    --orange: #FF7043;
+    --pink: #FF6B9D;
+    --green: #4CAF50;
+    --teal: #26C6DA;
+    --blue: #42A5F5;
+    --purple: #AB47BC;
+    --red: #EF5350;
+    --yellow: #FFD93D;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 68%);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── Sky ── */
+  .sun {
+    position: fixed; top: 20px; right: 48px;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, #ffe566 60%, #FFD93D 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 0 14px rgba(255,220,60,0.2), 0 0 0 28px rgba(255,220,60,0.09);
+    animation: sunPulse 4s ease-in-out infinite;
+    z-index: 0;
+  }
+  @keyframes sunPulse {
+    0%,100% { box-shadow: 0 0 0 14px rgba(255,220,60,0.2), 0 0 0 28px rgba(255,220,60,0.09); }
+    50%      { box-shadow: 0 0 0 22px rgba(255,220,60,0.28), 0 0 0 42px rgba(255,220,60,0.12); }
+  }
+
+  .cloud {
+    position: fixed; background: white; border-radius: 50px;
+    opacity: 0.85; animation: driftCloud linear infinite; z-index: 0;
+  }
+  .cloud::before,.cloud::after { content:''; position:absolute; background:white; border-radius:50%; }
+  .cloud.c1 { width:110px;height:36px;top:40px;left:-120px;animation-duration:30s; }
+  .cloud.c1::before { width:52px;height:52px;top:-24px;left:14px; }
+  .cloud.c1::after  { width:36px;height:36px;top:-16px;left:52px; }
+  .cloud.c2 { width:80px;height:26px;top:88px;left:-90px;animation-duration:42s;animation-delay:-16s;opacity:0.65; }
+  .cloud.c2::before { width:38px;height:38px;top:-18px;left:10px; }
+  .cloud.c2::after  { width:26px;height:26px;top:-12px;left:38px; }
+  @keyframes driftCloud { from{transform:translateX(0)} to{transform:translateX(110vw)} }
+
+  /* ── Grass ── */
+  .grass-strip {
+    position: fixed; bottom:0; left:0; right:0; height:100px;
+    background: var(--grass);
+    border-radius: 55% 55% 0 0 / 28px 28px 0 0;
+    z-index: 0;
+  }
+  .grass-strip::before {
+    content:''; position:absolute; top:-12px; left:0; right:0;
+    height:24px; background:var(--grass-dark); border-radius:50%; opacity:0.45;
+  }
+  .flowers {
+    position: fixed; bottom:60px; left:50%; transform:translateX(-50%);
+    display:flex; gap:28px; z-index:1; font-size:1.6rem;
+    animation: sway 3s ease-in-out infinite;
+  }
+  @keyframes sway { 0%,100%{transform:translateX(-50%) rotate(0)} 50%{transform:translateX(-50%) rotate(2deg)} }
+
+  /* ── Page ── */
+  .page { position:relative; z-index:2; min-height:100vh; padding-bottom:140px; }
+
+  /* Back button */
+  .back-btn {
+    position:absolute; top:18px; left:18px;
+    background:white; border:3px solid var(--navy); border-radius:50px;
+    padding:9px 20px; font-family:'Fredoka One',cursive; font-size:0.95rem;
+    color:var(--navy); cursor:pointer; display:flex; align-items:center; gap:7px;
+    box-shadow:3px 3px 0 var(--navy); text-decoration:none;
+    transition:transform 0.15s, box-shadow 0.15s; z-index:10;
+  }
+  .back-btn:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--navy); }
+
+  /* Hero */
+  .hero { max-width:580px; margin:0 auto; padding:86px 16px 0; text-align:center; }
+  .hero-card {
+    background:white; border:3px solid var(--navy);
+    border-radius:24px; box-shadow:5px 5px 0 var(--navy);
+    padding:20px 28px 16px; display:inline-block; width:100%;
+  }
+  .hero-card h1 {
+    font-family:'Fredoka One',cursive; font-size:clamp(1.8rem,5.5vw,2.6rem);
+    background:linear-gradient(135deg,#FF6B9D,#FF7043,#FFD93D);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .hero-card p { font-size:0.95rem; color:#777; font-weight:700; margin-top:5px; }
+
+  /* Score bar */
+  .scorebar {
+    display:flex; justify-content:center; gap:14px;
+    margin:16px auto 0; max-width:480px; padding:0 16px; flex-wrap:wrap;
+  }
+  .score-pill {
+    background:white; border:3px solid var(--navy); border-radius:50px;
+    padding:8px 20px; font-family:'Fredoka One',cursive; font-size:0.95rem;
+    color:var(--navy); box-shadow:3px 3px 0 var(--navy);
+    display:flex; align-items:center; gap:7px;
+  }
+  .score-pill span { font-size:1.2rem; }
+
+  /* Progress dots */
+  .progress-dots { display:flex; justify-content:center; gap:9px; margin-bottom:18px; }
+  .dot { width:13px; height:13px; border-radius:50%; background:#D0E8FF; border:2px solid var(--navy); transition:background 0.3s,transform 0.3s; }
+  .dot.done    { background:var(--green); transform:scale(1.15); }
+  .dot.current { background:var(--yellow); transform:scale(1.25); }
+
+  /* ── Game card ── */
+  .game-card {
+    background:white; border:3px solid var(--navy); border-radius:26px;
+    box-shadow:6px 6px 0 var(--navy);
+    max-width:580px; margin:18px auto 0; padding:26px 22px 22px;
+    position:relative; overflow:hidden;
+  }
+  .game-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:7px;
+    background:linear-gradient(90deg,var(--red),var(--orange),var(--yellow),var(--green));
+    border-radius:26px 26px 0 0;
+  }
+
+  /* Question label */
+  .q-label {
+    font-family:'Fredoka One',cursive;
+    font-size:clamp(1.4rem,4vw,1.9rem);
+    color:var(--navy); text-align:center; margin-bottom:18px;
+  }
+  .q-label .num {
+    display:inline-block; background:var(--yellow);
+    border:2px solid var(--navy); border-radius:10px;
+    padding:1px 14px; margin:0 4px;
+  }
+  .q-label .minus { color:var(--red); }
+
+  /* ── Object stage ── */
+  .stage {
+    background:#F0F9FF; border:3px dashed #90CAF9;
+    border-radius:18px; padding:16px 14px 14px;
+    min-height:110px; margin-bottom:16px; position:relative;
+  }
+  .stage-label {
+    font-family:'Fredoka One',cursive; font-size:0.8rem;
+    color:#90CAF9; position:absolute; top:6px; left:12px;
+    letter-spacing:1px;
+  }
+
+  .objects-row {
+    display:flex; flex-wrap:wrap; gap:8px;
+    align-items:center; justify-content:center;
+    padding-top:14px;
+  }
+
+  .obj {
+    font-size:clamp(1.8rem,5vw,2.4rem);
+    display:inline-block; user-select:none;
+    animation:popIn 0.35s cubic-bezier(.68,-0.55,.27,1.55) both;
+    transition:transform 0.2s, opacity 0.3s, filter 0.3s;
+    cursor:default; line-height:1; position:relative;
+  }
+  .obj:hover:not(.crossed) { transform:scale(1.2) rotate(-5deg); }
+
+  /* crossed-out object */
+  .obj.crossed {
+    opacity:0.25; filter:grayscale(1);
+    transform:scale(0.85);
+    cursor:default;
+  }
+  .obj.crossed::after {
+    content:'❌';
+    position:absolute; top:-4px; right:-6px;
+    font-size:0.65em; line-height:1;
+  }
+
+  @keyframes popIn {
+    from{transform:scale(0) rotate(-15deg);opacity:0}
+    to  {transform:scale(1) rotate(0);opacity:1}
+  }
+
+  /* Take-away animation */
+  @keyframes takeAway {
+    0%  {transform:scale(1);opacity:1}
+    40% {transform:scale(1.3) rotate(10deg);opacity:0.8}
+    100%{transform:scale(0.5) rotate(-20deg);opacity:0;filter:grayscale(1)}
+  }
+  .obj.taking { animation:takeAway 0.5s ease forwards; }
+
+  /* ── Hint strip ── */
+  .hint-strip {
+    text-align:center; font-family:'Fredoka One',cursive;
+    font-size:clamp(1rem,3vw,1.25rem); color:#666; margin-bottom:14px;
+  }
+  .hint-strip b { color:var(--red); }
+
+  /* ── Answer buttons ── */
+  .answers {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:10px;
+  }
+  .ans-btn {
+    font-family:'Fredoka One',cursive; font-size:clamp(1.4rem,4vw,2rem);
+    border:none; border-radius:14px; padding:14px 8px; cursor:pointer;
+    box-shadow:0 5px 0 rgba(0,0,0,0.18); color:white;
+    transition:transform 0.15s, box-shadow 0.15s;
+  }
+  .ans-btn:nth-child(1){background:var(--blue);}
+  .ans-btn:nth-child(2){background:var(--pink);}
+  .ans-btn:nth-child(3){background:var(--green);}
+  .ans-btn:nth-child(4){background:var(--purple);}
+  .ans-btn:hover  {transform:translateY(-3px);box-shadow:0 8px 0 rgba(0,0,0,0.18);}
+  .ans-btn:active {transform:translateY(2px); box-shadow:0 2px 0 rgba(0,0,0,0.18);}
+  .ans-btn.correct{background:var(--green)!important;animation:correctPop 0.5s ease;}
+  .ans-btn.wrong  {background:var(--red)!important;animation:shake 0.4s ease;}
+  @keyframes correctPop{0%{transform:scale(1)}40%{transform:scale(1.2)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+  /* Feedback */
+  .feedback {
+    text-align:center; font-family:'Fredoka One',cursive;
+    font-size:clamp(1.1rem,3.5vw,1.5rem); min-height:38px; margin-top:6px;
+  }
+  .feedback.yay  { color:var(--green); }
+  .feedback.oops { color:var(--red); }
+
+  /* Next button */
+  .next-btn {
+    display:block; margin:14px auto 0;
+    font-family:'Fredoka One',cursive; font-size:1.25rem;
+    background:var(--orange); color:white; border:none;
+    border-radius:50px; padding:13px 38px; cursor:pointer;
+    box-shadow:0 6px 0 #bf4c28;
+    transition:transform 0.15s, box-shadow 0.15s;
+  }
+  .next-btn:hover  {transform:translateY(-3px);box-shadow:0 9px 0 #bf4c28;}
+  .next-btn:active {transform:translateY(3px); box-shadow:0 2px 0 #bf4c28;}
+  .next-btn.hidden { display:none; }
+
+  /* ── Celebration ── */
+  .celebrate {
+    position:fixed; inset:0; background:rgba(255,255,255,0.93);
+    z-index:100; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:14px;
+    animation:fadeIn 0.4s ease;
+  }
+  .celebrate.hidden { display:none; }
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .celebrate h2 {
+    font-family:'Fredoka One',cursive; font-size:clamp(2rem,7vw,3.2rem);
+    color:var(--orange); text-align:center; line-height:1.2;
+  }
+  .celebrate p { font-size:1.05rem; color:#666; font-weight:700; text-align:center; }
+  .big-emoji { font-size:clamp(4rem,12vw,7rem); animation:bounce 0.7s ease infinite alternate; }
+  @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-18px)}}
+  .play-again-btn {
+    font-family:'Fredoka One',cursive; font-size:1.3rem;
+    background:var(--green); color:white; border:none;
+    border-radius:50px; padding:14px 40px; cursor:pointer;
+    box-shadow:0 6px 0 #388E3C; transition:transform 0.15s; margin-top:6px;
+  }
+  .play-again-btn:hover { transform:scale(1.06); }
+
+  /* Confetti */
+  .confetti-piece {
+    position:fixed; border-radius:3px; opacity:0;
+    pointer-events:none; animation:confettiFall 2.5s ease-in forwards; z-index:200;
+  }
+  @keyframes confettiFall{
+    0%  {opacity:1;transform:translateY(-20px) rotate(0)}
+    100%{opacity:0;transform:translateY(100vh) rotate(720deg)}
+  }
+
+  /* ── Take-away button ── */
+  .takeaway-btn {
+    display:block; margin:14px auto 6px;
+    font-family:'Fredoka One',cursive; font-size:1.05rem;
+    background:var(--red); color:white; border:none;
+    border-radius:50px; padding:11px 30px; cursor:pointer;
+    box-shadow:0 5px 0 #b71c1c; transition:transform 0.15s, box-shadow 0.15s;
+  }
+  .takeaway-btn:hover  {transform:translateY(-2px);box-shadow:0 7px 0 #b71c1c;}
+  .takeaway-btn:active {transform:translateY(2px); box-shadow:0 2px 0 #b71c1c;}
+  .takeaway-btn.hidden { display:none; }
+  .takeaway-btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+  @media(max-width:480px){
+    .answers{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<div class="sun"></div>
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+
+<div class="page">
+  <a class="back-btn" href="learning_corner.html">← Back</a>
+
+  <div class="hero">
+    <div class="hero-card">
+      <h1>➖ Take Away!</h1>
+      <p>Watch the objects disappear and find what's left! 🤩</p>
+    </div>
+  </div>
+
+  <div class="scorebar">
+    <div class="score-pill"><span>⭐</span> Stars: <b id="score">0</b></div>
+    <div class="score-pill"><span>🎯</span> Question: <b id="qnum">1</b> / 8</div>
+  </div>
+
+  <div class="game-card" id="gameCard">
+    <div class="progress-dots" id="dots"></div>
+    <div class="q-label" id="qLabel"></div>
+
+    <!-- All objects shown here -->
+    <div class="stage" id="stage">
+      <div class="stage-label">ALL OBJECTS</div>
+      <div class="objects-row" id="objRow"></div>
+    </div>
+
+    <div class="hint-strip" id="hintStrip"></div>
+
+    <!-- Take Away button -->
+    <button class="takeaway-btn" id="takeAwayBtn" onclick="doTakeAway()">
+      🗑️ Take Away!
+    </button>
+
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Next ➡️</button>
+  </div>
+</div>
+
+<!-- Celebration -->
+<div class="celebrate hidden" id="celebrateScreen">
+  <div class="big-emoji" id="celebEmoji">🎉</div>
+  <h2 id="celebTitle">Awesome!</h2>
+  <p>You got <b id="finalScore">0</b> out of 8 stars! ⭐</p>
+  <button class="play-again-btn" onclick="startGame()">Play Again 🔄</button>
+</div>
+
+<div class="grass-strip"></div>
+<div class="flowers">🌸 🌻 🌼 🌸 🌺 🌼 🌸</div>
+
+<script>
+const EMOJI_SETS = [
+  ['🍎','🍊'],['🐶','🐱'],['🚗','🚕'],['⭐','🌟'],
+  ['🎈','🎉'],['🦁','🐯'],['🍦','🍭'],['🌸','🌺']
+];
+
+const TOTAL = 8;
+let questions = [], currentQ = 0, score = 0, answered = false, takeAwayDone = false;
+
+function generateQuestions() {
+  questions = [];
+  for (let i = 0; i < TOTAL; i++) {
+    const total = Math.floor(Math.random() * 5) + 3; // 3–7
+    const takeAway = Math.floor(Math.random() * (total - 1)) + 1; // 1 to total-1
+    questions.push({ total, takeAway, emoji: EMOJI_SETS[i % EMOJI_SETS.length] });
+  }
+}
+
+function buildDots() {
+  const el = document.getElementById('dots');
+  el.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < currentQ ? ' done' : i === currentQ ? ' current' : '');
+    el.appendChild(d);
+  }
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function getWrongAnswers(correct, total) {
+  const s = new Set();
+  while (s.size < 3) {
+    let w = correct + Math.floor(Math.random() * 5) - 2;
+    if (w !== correct && w >= 0 && w <= total) s.add(w);
+  }
+  return [...s];
+}
+
+function renderQuestion() {
+  answered = false;
+  takeAwayDone = false;
+  const q = questions[currentQ];
+  document.getElementById('qnum').textContent = currentQ + 1;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('answers').innerHTML = '';
+  buildDots();
+
+  // Label
+  document.getElementById('qLabel').innerHTML =
+    `<span class="num">${q.total}</span> <span class="minus"> − </span> <span class="num">${q.takeAway}</span> = ?`;
+
+  // Hint
+  document.getElementById('hintStrip').innerHTML =
+    `There are <b>${q.total}</b> objects. We take away <b>${q.takeAway}</b>. How many are left? 🤔`;
+
+  // Objects
+  const row = document.getElementById('objRow');
+  row.innerHTML = '';
+  for (let i = 0; i < q.total; i++) {
+    const el = document.createElement('span');
+    el.className = 'obj';
+    el.textContent = q.emoji[0];
+    el.style.animationDelay = (i * 0.07) + 's';
+    el.dataset.idx = i;
+    row.appendChild(el);
+  }
+
+  // Take-away button
+  const tab = document.getElementById('takeAwayBtn');
+  tab.classList.remove('hidden');
+  tab.disabled = false;
+  tab.textContent = `🗑️ Take Away ${q.takeAway}!`;
+}
+
+let takeAwayTimer = null;
+function doTakeAway() {
+  const q = questions[currentQ];
+  const btn = document.getElementById('takeAwayBtn');
+  btn.disabled = true;
+
+  const objs = [...document.querySelectorAll('#objRow .obj:not(.crossed)')];
+  // cross out the last `takeAway` objects one by one
+  let count = 0;
+  function crossNext() {
+    if (count >= q.takeAway) {
+      // All taken away — show answer buttons
+      takeAwayDone = true;
+      showAnswerButtons();
+      btn.classList.add('hidden');
+      return;
+    }
+    const el = objs[objs.length - 1 - count];
+    el.classList.add('taking');
+    el.addEventListener('animationend', () => {
+      el.classList.remove('taking');
+      el.classList.add('crossed');
+    }, { once: true });
+    count++;
+    takeAwayTimer = setTimeout(crossNext, 350);
+  }
+  crossNext();
+}
+
+function showAnswerButtons() {
+  const q = questions[currentQ];
+  const correct = q.total - q.takeAway;
+  const options = shuffle([correct, ...getWrongAnswers(correct, q.total)]);
+  const div = document.getElementById('answers');
+  div.innerHTML = '';
+  options.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'ans-btn';
+    b.textContent = opt;
+    b.onclick = () => checkAnswer(opt, correct, b);
+    div.appendChild(b);
+  });
+}
+
+function checkAnswer(sel, correct, btn) {
+  if (answered) return;
+  answered = true;
+  document.querySelectorAll('.ans-btn').forEach(b => b.style.pointerEvents = 'none');
+
+  if (sel === correct) {
+    btn.classList.add('correct');
+    score++;
+    document.getElementById('score').textContent = score;
+    document.getElementById('feedback').textContent = pickYay();
+    document.getElementById('feedback').className = 'feedback yay';
+    spawnConfetti(6);
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.ans-btn').forEach(b => { if (+b.textContent === correct) b.classList.add('correct'); });
+    document.getElementById('feedback').textContent = pickOops();
+    document.getElementById('feedback').className = 'feedback oops';
+  }
+
+  if (currentQ < TOTAL - 1) {
+    document.getElementById('nextBtn').classList.remove('hidden');
+  } else {
+    setTimeout(showCelebration, 1300);
+  }
+}
+
+function nextQuestion() { currentQ++; renderQuestion(); }
+
+function showCelebration() {
+  document.getElementById('celebrateScreen').classList.remove('hidden');
+  document.getElementById('finalScore').textContent = score;
+  const emoji = score >= 7 ? '🏆' : score >= 5 ? '🎉' : '💪';
+  const title = score >= 7 ? "You're a Subtraction Star!" : score >= 5 ? "Great Job!" : "Keep Practicing!";
+  document.getElementById('celebEmoji').textContent = emoji;
+  document.getElementById('celebTitle').textContent = title;
+  spawnConfetti(35);
+}
+
+function startGame() {
+  currentQ = 0; score = 0;
+  document.getElementById('score').textContent = 0;
+  document.getElementById('celebrateScreen').classList.add('hidden');
+  generateQuestions();
+  renderQuestion();
+}
+
+function pickYay() {
+  return ['🎉 Correct! Great job!','⭐ You nailed it!','🌟 Superstar!','🏆 Brilliant!','🥳 Amazing!'][Math.floor(Math.random()*5)];
+}
+function pickOops() {
+  return ['😊 Good try! Next one!','💪 Almost there!','🌈 Keep going!','🤗 You can do it!'][Math.floor(Math.random()*4)];
+}
+
+function spawnConfetti(n) {
+  const colors = ['#FFD93D','#FF7043','#FF6B9D','#4CAF50','#42A5F5','#AB47BC'];
+  for (let i = 0; i < n; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.cssText = `left:${Math.random()*100}vw;top:-10px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.5+Math.random()}s;animation-delay:${Math.random()*0.4}s;width:${8+Math.random()*8}px;height:${8+Math.random()*8}px;`;
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 3200);
+    }, i * 60);
+  }
+}
+
+startGame();
+</script>
+</body>
+</html>
