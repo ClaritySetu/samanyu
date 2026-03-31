@@ -1,47 +1,330 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Study Time</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔤 Spelling Time!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-body {
-    margin: 0;
-    background: black;
-    overflow: hidden;
-}
+  :root {
+    --sky-top: #a8dff5;
+    --sky-bot: #d4f1ff;
+    --grass: #5ec44a;
+    --grass-dark: #46a834;
+    --navy: #1a1a4e;
+    --orange: #FF7043;
+    --pink: #FF6B9D;
+    --green: #4CAF50;
+    --teal: #26C6DA;
+    --blue: #42A5F5;
+    --purple: #AB47BC;
+    --red: #EF5350;
+    --yellow: #FFD93D;
+  }
 
-#slide {
-    width: 100vw;
-    height: 100vh;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 68%);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── Sky decorations ── */
+  .sun {
+    position: fixed; top: 20px; right: 48px;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, #ffe566 60%, #FFD93D 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 0 14px rgba(255,220,60,0.2), 0 0 0 28px rgba(255,220,60,0.09);
+    animation: sunPulse 4s ease-in-out infinite;
+    z-index: 0;
+  }
+  @keyframes sunPulse {
+    0%,100% { box-shadow: 0 0 0 14px rgba(255,220,60,0.2), 0 0 0 28px rgba(255,220,60,0.09); }
+    50%      { box-shadow: 0 0 0 22px rgba(255,220,60,0.28), 0 0 0 42px rgba(255,220,60,0.12); }
+  }
+
+  .cloud {
+    position: fixed; background: white; border-radius: 50px;
+    opacity: 0.85; animation: driftCloud linear infinite; z-index: 0;
+    pointer-events: none;
+  }
+  .cloud::before, .cloud::after { content:''; position:absolute; background:white; border-radius:50%; }
+  .cloud.c1 { width:110px;height:36px;top:38px;left:-120px;animation-duration:30s; }
+  .cloud.c1::before { width:52px;height:52px;top:-24px;left:14px; }
+  .cloud.c1::after  { width:36px;height:36px;top:-16px;left:52px; }
+  .cloud.c2 { width:80px;height:26px;top:85px;left:-90px;animation-duration:42s;animation-delay:-16s;opacity:0.65; }
+  .cloud.c2::before { width:38px;height:38px;top:-18px;left:10px; }
+  .cloud.c2::after  { width:26px;height:26px;top:-12px;left:38px; }
+  .cloud.c3 { width:130px;height:38px;top:15px;left:-140px;animation-duration:36s;animation-delay:-8s;opacity:0.55; }
+  .cloud.c3::before { width:58px;height:58px;top:-28px;left:18px; }
+  .cloud.c3::after  { width:44px;height:44px;top:-20px;left:62px; }
+  @keyframes driftCloud { from{transform:translateX(0)} to{transform:translateX(110vw)} }
+
+  /* ── Grass ── */
+  .grass-strip {
+    position: fixed; bottom:0; left:0; right:0; height:100px;
+    background: var(--grass); border-radius:55% 55% 0 0/28px 28px 0 0; z-index:0;
+  }
+  .grass-strip::before {
+    content:''; position:absolute; top:-12px; left:0; right:0;
+    height:24px; background:var(--grass-dark); border-radius:50%; opacity:0.45;
+  }
+  .flowers {
+    position: fixed; bottom:60px; left:50%; transform:translateX(-50%);
+    display:flex; gap:28px; z-index:1; font-size:1.6rem;
+    animation: sway 3s ease-in-out infinite; pointer-events:none;
+  }
+  @keyframes sway { 0%,100%{transform:translateX(-50%) rotate(0)} 50%{transform:translateX(-50%) rotate(2deg)} }
+
+  /* ── Page layout ── */
+  .page {
+    position: relative; z-index: 2;
+    min-height: 100vh; padding-bottom: 130px;
+  }
+
+  /* Back button */
+  .back-btn {
+    position: absolute; top:18px; left:18px;
+    background: white; border:3px solid var(--navy); border-radius:50px;
+    padding:9px 20px; font-family:'Fredoka One',cursive; font-size:0.95rem;
+    color:var(--navy); cursor:pointer; display:flex; align-items:center; gap:7px;
+    box-shadow:3px 3px 0 var(--navy); text-decoration:none;
+    transition:transform 0.15s, box-shadow 0.15s; z-index:10;
+  }
+  .back-btn:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--navy); }
+
+  /* Hero */
+  .hero { max-width:580px; margin:0 auto; padding:84px 16px 0; text-align:center; }
+  .hero-card {
+    background:white; border:3px solid var(--navy); border-radius:24px;
+    box-shadow:5px 5px 0 var(--navy); padding:20px 28px 16px;
+    display:inline-block; width:100%;
+  }
+  .hero-card h1 {
+    font-family:'Fredoka One',cursive; font-size:clamp(1.8rem,5.5vw,2.6rem);
+    background:linear-gradient(135deg,#FF6B9D,#FF7043,#FFD93D);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .hero-card p { font-size:0.95rem; color:#777; font-weight:700; margin-top:4px; }
+
+  /* ── Slide counter pill ── */
+  .counter-row {
+    display:flex; justify-content:center; align-items:center;
+    gap:12px; margin:16px auto 0; flex-wrap:wrap;
+  }
+  .counter-pill {
+    background:white; border:3px solid var(--navy); border-radius:50px;
+    padding:8px 22px; font-family:'Fredoka One',cursive; font-size:0.95rem;
+    color:var(--navy); box-shadow:3px 3px 0 var(--navy);
+    display:flex; align-items:center; gap:8px;
+  }
+  .counter-pill span { font-size:1.2rem; }
+
+  /* ── Main viewer card ── */
+  .viewer-card {
+    background:white; border:3px solid var(--navy); border-radius:26px;
+    box-shadow:6px 6px 0 var(--navy);
+    max-width:660px; margin:20px auto 0;
+    padding:10px 10px 18px;
+    position:relative; overflow:hidden;
+    animation: cardAppear 0.5s cubic-bezier(.68,-0.55,.27,1.55) both;
+  }
+  @keyframes cardAppear {
+    from{opacity:0;transform:translateY(20px) scale(0.95)}
+    to  {opacity:1;transform:translateY(0) scale(1)}
+  }
+  .viewer-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:7px;
+    background:linear-gradient(90deg,var(--pink),var(--orange),var(--yellow),var(--teal));
+    border-radius:26px 26px 0 0;
+  }
+
+  /* Image frame */
+  .img-frame {
+    background:#F7FAFF; border:3px solid #D0E8FF;
+    border-radius:18px; margin:10px 0 0;
+    overflow:hidden; position:relative;
+    min-height:320px; display:flex; align-items:center; justify-content:center;
+  }
+
+  #slide {
+    max-width:100%; max-height:420px; width:auto;
+    display:block; margin:0 auto;
+    border-radius:14px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     object-fit: contain;
-}
+  }
 
-.nav {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 90px;
-    color: rgba(255,255,255,0.85);
-    cursor: pointer;
-    user-select: none;
-    padding: 20px;
-}
+  #slide.fade-out { opacity:0; transform:scale(0.97); }
+  #slide.fade-in  { opacity:1; transform:scale(1); }
 
-#prev { left: 20px; }
-#next { right: 20px; }
+  /* Loading spinner */
+  .spinner {
+    position:absolute; inset:0; display:flex;
+    align-items:center; justify-content:center;
+    font-size:3rem; animation:spin 1s linear infinite;
+    display:none;
+  }
+  @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
 
-.nav:hover {
-    color: white;
-}
+  /* Image error fallback */
+  .img-error {
+    display:none; flex-direction:column; align-items:center;
+    justify-content:center; gap:10px; padding:40px;
+    font-family:'Fredoka One',cursive; color:#aaa;
+  }
+  .img-error span { font-size:4rem; }
+  .img-error p { font-size:1rem; }
+
+  /* ── Navigation row ── */
+  .nav-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 8px 0; gap:12px;
+  }
+
+  .nav-btn {
+    font-family:'Fredoka One',cursive; font-size:1.1rem;
+    border:3px solid var(--navy); border-radius:50px;
+    padding:11px 24px; cursor:pointer; color:white;
+    box-shadow:4px 4px 0 var(--navy);
+    display:flex; align-items:center; gap:8px;
+    transition:transform 0.15s, box-shadow 0.15s;
+    flex-shrink:0;
+  }
+  .nav-btn:hover  { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--navy); }
+  .nav-btn:active { transform:translate(2px,2px);   box-shadow:2px 2px 0 var(--navy); }
+  .nav-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4px 4px 0 var(--navy); }
+
+  #prevBtn { background:var(--purple); }
+  #nextBtn { background:var(--teal); color:var(--navy); }
+
+  /* Dot indicators */
+  .dot-strip {
+    display:flex; flex-wrap:wrap; gap:7px;
+    align-items:center; justify-content:center;
+    flex:1; padding:0 6px;
+  }
+  .idot {
+    width:12px; height:12px; border-radius:50%;
+    background:#D0E8FF; border:2px solid var(--navy);
+    cursor:pointer; transition:background 0.25s, transform 0.25s;
+  }
+  .idot.active { background:var(--pink); transform:scale(1.35); }
+  .idot.seen   { background:var(--green); }
+  .idot:hover  { transform:scale(1.4); }
+
+  /* ── Thumbnail strip ── */
+  .thumb-label {
+    font-family:'Fredoka One',cursive; font-size:0.85rem;
+    color:var(--navy); opacity:0.6; text-align:center;
+    margin:14px 0 8px; letter-spacing:1px;
+  }
+  .thumbs {
+    display:flex; gap:10px; overflow-x:auto;
+    padding:0 4px 8px; scroll-behavior:smooth;
+  }
+  .thumbs::-webkit-scrollbar { height:5px; }
+  .thumbs::-webkit-scrollbar-track { background:#F0F4FF; border-radius:10px; }
+  .thumbs::-webkit-scrollbar-thumb { background:#B0C4DE; border-radius:10px; }
+
+  .thumb {
+    flex-shrink:0; width:72px; height:56px;
+    border:3px solid #D0E8FF; border-radius:10px;
+    overflow:hidden; cursor:pointer;
+    transition:border-color 0.2s, transform 0.2s;
+    background:#F7FAFF;
+  }
+  .thumb img { width:100%; height:100%; object-fit:cover; }
+  .thumb:hover { transform:scale(1.08); border-color:var(--blue); }
+  .thumb.active { border-color:var(--pink); border-width:3px; transform:scale(1.1); }
+
+  /* ── Keyboard hint ── */
+  .key-hint {
+    text-align:center; font-size:0.78rem; color:#aaa; font-weight:700;
+    margin-top:10px;
+  }
+  .key-hint kbd {
+    background:#eee; border:2px solid #ccc; border-radius:6px;
+    padding:2px 8px; font-family:'Fredoka One',cursive; font-size:0.75rem;
+    color:#555;
+  }
+
+  /* Fullscreen button */
+  .fs-btn {
+    position:absolute; top:16px; right:14px;
+    background:white; border:2px solid #D0D0D0; border-radius:8px;
+    padding:5px 9px; cursor:pointer; font-size:1rem;
+    color:#888; transition:color 0.2s, border-color 0.2s;
+    z-index:5;
+  }
+  .fs-btn:hover { color:var(--navy); border-color:var(--navy); }
+
+  @media (max-width:480px) {
+    .nav-btn { padding:9px 16px; font-size:0.9rem; }
+    .hero { padding-top:74px; }
+  }
 </style>
 </head>
-
 <body>
 
-<img id="slide">
+<div class="sun"></div>
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="cloud c3"></div>
 
-<div id="prev" class="nav" onclick="prevImage()">⬅️</div>
-<div id="next" class="nav" onclick="nextImage()">➡️</div>
+<div class="page">
+
+  <a class="back-btn" href="learning_corner.html">← Back</a>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-card">
+      <h1>🔤 Spelling Time!</h1>
+      <p>Look at the pictures and learn to spell! 🌟</p>
+    </div>
+  </div>
+
+  <!-- Counter -->
+  <div class="counter-row">
+    <div class="counter-pill"><span>🖼️</span> Card <b id="counterText">1 of 8</b></div>
+    <div class="counter-pill"><span>✅</span> Seen: <b id="seenCount">0</b></div>
+  </div>
+
+  <!-- Main viewer -->
+  <div class="viewer-card" id="viewerCard">
+    <button class="fs-btn" onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
+
+    <div class="img-frame" id="imgFrame">
+      <div class="spinner" id="spinner">⏳</div>
+      <img id="slide" alt="Spelling image" />
+      <div class="img-error" id="imgError">
+        <span>🖼️</span>
+        <p>Image not found</p>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" id="prevBtn" onclick="prevImage()">⬅️ Prev</button>
+      <div class="dot-strip" id="dotStrip"></div>
+      <button class="nav-btn" id="nextBtn" onclick="nextImage()">Next ➡️</button>
+    </div>
+
+    <div class="thumb-label">ALL CARDS — CLICK TO JUMP</div>
+    <div class="thumbs" id="thumbStrip"></div>
+
+    <div class="key-hint">
+      Use <kbd>←</kbd> <kbd>→</kbd> arrow keys or swipe to navigate
+    </div>
+  </div>
+
+</div>
+
+<div class="grass-strip"></div>
+<div class="flowers">🌸 🌻 🌼 🌸 🌺 🌼 🌸</div>
 
 <script>
 const images = [
@@ -55,20 +338,148 @@ const images = [
   "vehicle1.png"
 ];
 
-let i = 0;
-const slide = document.getElementById("slide");
-slide.src = images[i];
+// Labels for each image (shown in thumbnail area)
+const labels = [
+  "Objects","Fruits","More Fruits","Digits","Fruits","Vegetables","Vegetables","Vehicles"
+];
 
-function nextImage() {
-  i = (i + 1) % images.length;
-  slide.src = images[i];
+let current = 0;
+const seen = new Set([0]);
+const slide = document.getElementById('slide');
+const spinner = document.getElementById('spinner');
+const imgError = document.getElementById('imgError');
+
+// ── Build dot strip ──
+function buildDots() {
+  const strip = document.getElementById('dotStrip');
+  strip.innerHTML = '';
+  images.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'idot' + (i === current ? ' active' : seen.has(i) ? ' seen' : '');
+    d.title = labels[i];
+    d.onclick = () => goTo(i);
+    strip.appendChild(d);
+  });
 }
 
-function prevImage() {
-  i = (i - 1 + images.length) % images.length;
-  slide.src = images[i];
+// ── Build thumbnails ──
+function buildThumbs() {
+  const strip = document.getElementById('thumbStrip');
+  strip.innerHTML = '';
+  images.forEach((src, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'thumb' + (i === current ? ' active' : '');
+    wrap.title = labels[i];
+    wrap.onclick = () => goTo(i);
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = labels[i];
+    img.onerror = () => { wrap.style.background='#F0F0F0'; img.style.display='none'; };
+    wrap.appendChild(img);
+    strip.appendChild(wrap);
+  });
 }
+
+// ── Update counter ──
+function updateCounter() {
+  document.getElementById('counterText').textContent = `${current + 1} of ${images.length}`;
+  document.getElementById('seenCount').textContent = seen.size;
+  document.getElementById('prevBtn').disabled = (current === 0);
+  document.getElementById('nextBtn').disabled = (current === images.length - 1);
+}
+
+// ── Go to slide ──
+function goTo(idx) {
+  if (idx < 0 || idx >= images.length) return;
+
+  // Fade out
+  slide.classList.add('fade-out');
+  imgError.style.display = 'none';
+
+  setTimeout(() => {
+    current = idx;
+    seen.add(current);
+    spinner.style.display = 'flex';
+    slide.style.display = 'none';
+
+    slide.onload = () => {
+      spinner.style.display = 'none';
+      slide.style.display = 'block';
+      imgError.style.display = 'none';
+      slide.classList.remove('fade-out');
+    };
+    slide.onerror = () => {
+      spinner.style.display = 'none';
+      slide.style.display = 'none';
+      imgError.style.display = 'flex';
+    };
+
+    slide.src = images[current];
+    updateCounter();
+    buildDots();
+    updateThumbs();
+    scrollThumbIntoView();
+  }, 280);
+}
+
+function updateThumbs() {
+  document.querySelectorAll('.thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === current);
+  });
+}
+
+function scrollThumbIntoView() {
+  const thumbs = document.querySelectorAll('.thumb');
+  if (thumbs[current]) {
+    thumbs[current].scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+  }
+}
+
+function nextImage() { goTo(current + 1); }
+function prevImage() { goTo(current - 1); }
+
+// ── Keyboard navigation ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextImage();
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevImage();
+});
+
+// ── Touch / swipe support ──
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) { dx < 0 ? nextImage() : prevImage(); }
+});
+
+// ── Fullscreen ──
+function toggleFullscreen() {
+  const el = document.getElementById('imgFrame');
+  if (!document.fullscreenElement) {
+    el.requestFullscreen && el.requestFullscreen();
+  } else {
+    document.exitFullscreen && document.exitFullscreen();
+  }
+}
+
+// ── Init ──
+buildDots();
+buildThumbs();
+updateCounter();
+
+// Load first image
+spinner.style.display = 'flex';
+slide.style.display = 'none';
+slide.onload = () => {
+  spinner.style.display = 'none';
+  slide.style.display = 'block';
+};
+slide.onerror = () => {
+  spinner.style.display = 'none';
+  slide.style.display = 'none';
+  imgError.style.display = 'flex';
+};
+slide.src = images[0];
 </script>
-
 </body>
 </html>
