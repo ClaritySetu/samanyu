@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 Learning Corner</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-top: #a8dff5;
+    --sky-bot: #d4f1ff;
+    --grass: #5ec44a;
+    --grass-dark: #46a834;
+    --navy: #1a1a4e;
+    --card-bg: #ffffff;
+    --yellow: #FFD93D;
+    --orange: #FF7043;
+    --pink: #FF6B9D;
+    --green: #4CAF50;
+    --teal: #26C6DA;
+    --blue: #42A5F5;
+    --purple: #AB47BC;
+    --red: #EF5350;
+    --lime: #9CCC65;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 65%, var(--sky-bot) 70%);
+    position: relative;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── Sky decorations ── */
+  .sun {
+    position: absolute;
+    top: 22px; right: 48px;
+    width: 90px; height: 90px;
+    background: radial-gradient(circle, #ffe566 60%, #FFD93D 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 0 14px rgba(255,220,60,0.22), 0 0 0 28px rgba(255,220,60,0.10);
+    animation: sunPulse 4s ease-in-out infinite;
+    z-index: 0;
+  }
+  @keyframes sunPulse {
+    0%,100% { box-shadow: 0 0 0 14px rgba(255,220,60,0.22), 0 0 0 28px rgba(255,220,60,0.10); }
+    50%      { box-shadow: 0 0 0 20px rgba(255,220,60,0.28), 0 0 0 40px rgba(255,220,60,0.12); }
+  }
+
+  .cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.88;
+    animation: driftCloud linear infinite;
+  }
+  .cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+  .cloud.c1 { width:110px;height:36px;top:44px;left:-120px;animation-duration:28s; }
+  .cloud.c1::before { width:52px;height:52px;top:-24px;left:16px; }
+  .cloud.c1::after  { width:36px;height:36px;top:-16px;left:52px; }
+  .cloud.c2 { width:80px;height:26px;top:90px;left:-90px;animation-duration:38s;animation-delay:-14s;opacity:0.7; }
+  .cloud.c2::before { width:38px;height:38px;top:-18px;left:10px; }
+  .cloud.c2::after  { width:26px;height:26px;top:-12px;left:38px; }
+  .cloud.c3 { width:130px;height:40px;top:18px;left:-140px;animation-duration:34s;animation-delay:-8s;opacity:0.65; }
+  .cloud.c3::before { width:58px;height:58px;top:-28px;left:20px; }
+  .cloud.c3::after  { width:44px;height:44px;top:-20px;left:62px; }
+
+  @keyframes driftCloud {
+    from { transform: translateX(0); }
+    to   { transform: translateX(110vw); }
+  }
+
+  /* ── Grass ── */
+  .grass-strip {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 110px;
+    background: var(--grass);
+    border-radius: 55% 55% 0 0 / 30px 30px 0 0;
+    z-index: 0;
+  }
+  .grass-strip::before {
+    content: '';
+    position: absolute;
+    top: -14px; left: 0; right: 0;
+    height: 28px;
+    background: var(--grass-dark);
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+
+  /* Flowers on grass */
+  .flowers {
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 32px;
+    z-index: 1;
+    font-size: 1.8rem;
+    animation: sway 3s ease-in-out infinite;
+  }
+  @keyframes sway {
+    0%,100% { transform: translateX(-50%) rotate(0deg); }
+    50%      { transform: translateX(-50%) rotate(2deg); }
+  }
+
+  /* ── Layout ── */
+  .page {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    padding-bottom: 140px;
+  }
+
+  /* ── Back button ── */
+  .back-btn {
+    position: absolute;
+    top: 20px; left: 20px;
+    background: white;
+    border: 3px solid var(--navy);
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    color: var(--navy);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 3px 3px 0 var(--navy);
+    transition: transform 0.15s, box-shadow 0.15s;
+    z-index: 10;
+    text-decoration: none;
+  }
+  .back-btn:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--navy); }
+  .back-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--navy); }
+
+  /* ── Hero banner ── */
+  .hero {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 90px 20px 0;
+    text-align: center;
+  }
+
+  .hero-card {
+    background: white;
+    border: 3px solid var(--navy);
+    border-radius: 24px;
+    box-shadow: 5px 5px 0 var(--navy);
+    padding: 22px 32px 18px;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .hero-card h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    background: linear-gradient(135deg, #FF6B9D, #FF7043, #FFD93D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+
+  .hero-card p {
+    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+    color: #666;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    text-align: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--navy);
+    margin: 32px 0 16px;
+    opacity: 0.75;
+    letter-spacing: 1px;
+  }
+
+  /* ── Cards grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ── Activity card ── */
+  .card {
+    background: white;
+    border: 3px solid var(--navy);
+    border-radius: 22px;
+    box-shadow: 5px 5px 0 var(--navy);
+    padding: 28px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.18s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.18s;
+    animation: cardAppear 0.5s cubic-bezier(.68,-0.55,.27,1.55) both;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card:nth-child(1)  { animation-delay: 0.05s; }
+  .card:nth-child(2)  { animation-delay: 0.12s; }
+  .card:nth-child(3)  { animation-delay: 0.19s; }
+  .card:nth-child(4)  { animation-delay: 0.26s; }
+  .card:nth-child(5)  { animation-delay: 0.33s; }
+  .card:nth-child(6)  { animation-delay: 0.40s; }
+  .card:nth-child(7)  { animation-delay: 0.47s; }
+  .card:nth-child(8)  { animation-delay: 0.54s; }
+
+  @keyframes cardAppear {
+    from { opacity:0; transform: translateY(30px) scale(0.85); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  .card:not(.soon):hover {
+    transform: translate(-3px, -5px) scale(1.03);
+    box-shadow: 8px 10px 0 var(--navy);
+  }
+  .card:not(.soon):active {
+    transform: translate(2px, 2px) scale(0.98);
+    box-shadow: 2px 2px 0 var(--navy);
+  }
+
+  /* Color strip at top of each card */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 7px;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .card.c-orange::before  { background: var(--orange); }
+  .card.c-pink::before    { background: var(--pink); }
+  .card.c-teal::before    { background: var(--teal); }
+  .card.c-purple::before  { background: var(--purple); }
+  .card.c-blue::before    { background: var(--blue); }
+  .card.c-lime::before    { background: var(--lime); }
+  .card.c-red::before     { background: var(--red); }
+  .card.c-yellow::before  { background: var(--yellow); }
+
+  .card-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    display: block;
+    filter: drop-shadow(2px 3px 0 rgba(0,0,0,0.1));
+    transition: transform 0.25s;
+  }
+  .card:not(.soon):hover .card-icon { transform: scale(1.2) rotate(-8deg); }
+
+  .card h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.15rem;
+    color: var(--navy);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .card p {
+    font-size: 0.82rem;
+    color: #888;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 14px;
+    flex: 1;
+  }
+
+  /* Explore button */
+  .explore-btn {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 22px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: transform 0.12s, filter 0.12s;
+    pointer-events: none;
+  }
+  .card:not(.soon):hover .explore-btn { filter: brightness(1.1); transform: scale(1.05); }
+
+  .btn-orange  { background: var(--orange); }
+  .btn-pink    { background: var(--pink); }
+  .btn-teal    { background: var(--teal); }
+  .btn-purple  { background: var(--purple); }
+  .btn-blue    { background: var(--blue); }
+  .btn-lime    { background: #7CB342; }
+  .btn-red     { background: var(--red); }
+  .btn-yellow  { background: #F9A825; }
+
+  /* Soon card */
+  .card.soon {
+    opacity: 0.65;
+    cursor: not-allowed;
+    background: #f5f5f5;
+  }
+  .card.soon::before { background: #ccc; }
+  .soon-badge {
+    background: #ccc;
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.85rem;
+    border-radius: 50px;
+    padding: 7px 20px;
+  }
+
+  /* ── Star counter ── */
+  .star-bar {
+    display: flex;
+    justify-content: center;
+    margin: 26px 0 0;
+  }
+  .star-pill {
+    background: white;
+    border: 3px solid var(--navy);
+    border-radius: 50px;
+    padding: 10px 28px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: var(--navy);
+    box-shadow: 4px 4px 0 var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .star-pill span { font-size: 1.4rem; }
+
+  /* ── Responsive ── */
+  @media (max-width: 500px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 12px; }
+    .hero { padding-top: 76px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sky -->
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="cloud c3"></div>
+<div class="sun"></div>
+
+<div class="page">
+
+  <a class="back-btn" href="#">← Back Home</a>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-card">
+      <h1>📚 Learning Corner!</h1>
+      <p>Pick an activity and let's have fun learning! ✨</p>
+    </div>
+  </div>
+
+  <!-- Stars earned -->
+  <div class="star-bar">
+    <div class="star-pill"><span>⭐</span> Stars Earned: <b id="totalStars">0</b></div>
+  </div>
+
+  <div class="section-label">🎮 Choose Your Activity</div>
+
+  <!-- Cards -->
+  <div class="grid">
+
+    <a class="card c-orange" href="addition_game.html">
+      <span class="card-icon">➕</span>
+      <h3>Addition</h3>
+      <p>Count objects &amp; learn to add numbers!</p>
+      <button class="explore-btn btn-orange">EXPLORE</button>
+    </a>
+
+    <a class="card c-pink" href="spelling.html">
+      <span class="card-icon">🔤</span>
+      <h3>Spelling</h3>
+      <p>Learn to spell fun words with pictures!</p>
+      <button class="explore-btn btn-pink">EXPLORE</button>
+    </a>
+
+    <a class="card c-teal" href="shapes.html">
+      <span class="card-icon">🔷</span>
+      <h3>Shapes</h3>
+      <p>Circle, square, triangle &amp; more!</p>
+      <button class="explore-btn btn-teal">EXPLORE</button>
+    </a>
+
+    <a class="card c-purple" href="alphabet.html">
+      <span class="card-icon">🔡</span>
+      <h3>Alphabet</h3>
+      <p>A to Z — letters, sounds &amp; words!</p>
+      <button class="explore-btn btn-purple">EXPLORE</button>
+    </a>
+
+    <a class="card c-blue" href="counting.html">
+      <span class="card-icon">🔢</span>
+      <h3>Counting</h3>
+      <p>Count from 1 to 20 with fun objects!</p>
+      <button class="explore-btn btn-blue">EXPLORE</button>
+    </a>
+
+    <a class="card c-lime" href="colors.html">
+      <span class="card-icon">🎨</span>
+      <h3>Colors</h3>
+      <p>Match and name all the colors of the rainbow!</p>
+      <button class="explore-btn btn-lime">EXPLORE</button>
+    </a>
+
+    <a class="card c-red" href="subtraction.html">
+      <span class="card-icon">➖</span>
+      <h3>Subtraction</h3>
+      <p>Take away objects &amp; find what's left!</p>
+      <button class="explore-btn btn-red">EXPLORE</button>
+    </a>
+
+    <!-- Coming soon -->
+    <div class="card soon c-yellow">
+      <span class="card-icon">🎵</span>
+      <h3>Music &amp; Rhymes</h3>
+      <p>More cool stuff ahead!</p>
+      <div class="soon-badge">SOON</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Grass + flowers -->
+<div class="grass-strip"></div>
+<div class="flowers">🌸 🌻 🌼 🌸 🌺 🌼 🌸</div>
+
+<script>
+  // Simple star persistence
+  const stars = localStorage.getItem('learningStars') || 0;
+  document.getElementById('totalStars').textContent = stars;
+
+  // Wobble cards on load for delight
+  document.querySelectorAll('.card:not(.soon)').forEach((card, i) => {
+    card.addEventListener('mouseenter', () => {
+      card.querySelector('.card-icon').style.animation = 'none';
+      setTimeout(() => card.querySelector('.card-icon').style.animation = '', 10);
+    });
+  });
+</script>
+
+</body>
+</html>
