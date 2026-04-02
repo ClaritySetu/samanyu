@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alphabet Drawing Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --surface: #fffdf8;
+      --surface2: #fff9f0;
+      --accent: #185FA5;
+      --accent2: #0F6E56;
+      --accent3: #993C1D;
+      --accent4: #534AB7;
+      --accent5: #3B6D11;
+      --text: #2a2420;
+      --text-muted: #7a6e65;
+      --border: rgba(42,36,32,0.12);
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --radius: 14px;
+      --radius-sm: 9px;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1.5px solid var(--border);
+      padding: 1.5rem 2rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--accent3); }
+
+    header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      main { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+
+    /* Letter Grid */
+    .grid-section h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .letter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+      gap: 10px;
+    }
+
+    .letter-card {
+      aspect-ratio: 1;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.6rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow);
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .letter-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .letter-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+      border-color: var(--accent);
+    }
+
+    .letter-card.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(24,95,165,0.35);
+    }
+
+    /* Demo Panel */
+    .demo-panel {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.25rem 1.25rem;
+      position: sticky;
+      top: 1.5rem;
+    }
+
+    .demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .demo-letter-badge {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.2rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .demo-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .replay-btn {
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      display: none;
+      transition: all 0.15s;
+    }
+
+    .replay-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    canvas#letter-canvas {
+      display: block;
+      width: 100%;
+      border-radius: var(--radius-sm);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+
+    .stroke-dots {
+      display: flex;
+      gap: 7px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 1.5px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .dot.done { background: var(--accent); border-color: var(--accent); }
+    .dot.current { background: #fff; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(24,95,165,0.2); }
+
+    .stroke-info {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+      min-height: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    .stroke-info.complete {
+      color: var(--accent2);
+    }
+
+    .hint {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .hint-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Alpha<span>Draw</span></div>
+    <p>Tap a letter to watch it being drawn stroke by stroke</p>
+  </div>
+</header>
+
+<main>
+  <section class="grid-section">
+    <h2>Choose a letter</h2>
+    <div class="letter-grid" id="grid"></div>
+  </section>
+
+  <aside class="demo-panel" id="demo-panel">
+    <div class="demo-header">
+      <div>
+        <div class="demo-title" id="demo-title">Pick a letter</div>
+        <div class="demo-letter-badge" id="demo-badge">—</div>
+      </div>
+      <button class="replay-btn" id="replay-btn">↺ Replay</button>
+    </div>
+    <div id="canvas-container">
+      <div class="hint">
+        <span class="hint-icon">✏️</span>
+        Select any letter from the grid to see how it's drawn
+      </div>
+    </div>
+    <div class="stroke-dots" id="dots"></div>
+    <div class="stroke-info" id="stroke-info"></div>
+  </aside>
+</main>
+
+<footer>AlphaDraw — Learn how every capital letter is written</footer>
+
+<script>
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const W = 280, H = 280, CX = 140, CY = 140;
+const S = 85;
+
+function pt(x, y) { return [CX + x * S / 100, CY + y * S / 100]; }
+
+function arcPts(cx, cy, r, startDeg, endDeg) {
+  const pts = [];
+  const steps = 48;
+  const startR = startDeg * Math.PI / 180;
+  const endR = endDeg * Math.PI / 180;
+  for (let i = 0; i <= steps; i++) {
+    const a = startR + (endR - startR) * (i / steps);
+    pts.push(pt(Math.cos(a) * r, Math.sin(a) * r));
+  }
+  return pts;
+}
+
+const DEFS = {
+  A: { strokes: [{ path: [pt(-60,80), pt(0,-80)], label: 'Left diagonal up' }, { path: [pt(0,-80), pt(60,80)], label: 'Right diagonal down' }, { path: [pt(-30,10), pt(30,10)], label: 'Crossbar' }] },
+  B: { strokes: [{ path: [pt(-40,80), pt(-40,-80)], label: 'Vertical stem' }, { path: [pt(-40,-80), pt(30,-80), pt(55,-60), pt(55,-30), pt(30,-10), pt(-40,-10)], label: 'Top bump' }, { path: [pt(-40,-10), pt(40,-10), pt(60,15), pt(60,55), pt(40,80), pt(-40,80)], label: 'Bottom bump' }] },
+  C: { strokes: [{ path: arcPts(0,0,80,-50,230), label: 'Open curve' }] },
+  D: { strokes: [{ path: [pt(-40,80), pt(-40,-80)], label: 'Vertical stem' }, { path: [pt(-40,-80), pt(30,-80), pt(65,-40), pt(65,40), pt(30,80), pt(-40,80)], label: 'Curved back' }] },
+  E: { strokes: [{ path: [pt(-50,80), pt(-50,-80)], label: 'Vertical stem' }, { path: [pt(-50,-80), pt(50,-80)], label: 'Top bar' }, { path: [pt(-50,0), pt(30,0)], label: 'Middle bar' }, { path: [pt(-50,80), pt(50,80)], label: 'Bottom bar' }] },
+  F: { strokes: [{ path: [pt(-50,80), pt(-50,-80)], label: 'Vertical stem' }, { path: [pt(-50,-80), pt(50,-80)], label: 'Top bar' }, { path: [pt(-50,0), pt(30,0)], label: 'Middle bar' }] },
+  G: { strokes: [{ path: arcPts(0,0,80,-50,200), label: 'Open curve' }, { path: [pt(80,0), pt(20,0)], label: 'Horizontal spur' }] },
+  H: { strokes: [{ path: [pt(-50,80), pt(-50,-80)], label: 'Left stem' }, { path: [pt(50,80), pt(50,-80)], label: 'Right stem' }, { path: [pt(-50,0), pt(50,0)], label: 'Crossbar' }] },
+  I: { strokes: [{ path: [pt(-30,-80), pt(30,-80)], label: 'Top serif' }, { path: [pt(0,-80), pt(0,80)], label: 'Vertical stem' }, { path: [pt(-30,80), pt(30,80)], label: 'Bottom serif' }] },
+  J: { strokes: [{ path: [pt(-10,80), pt(-10,-80)], label: 'Vertical stem' }, { path: [pt(-10,80), pt(-40,60), pt(-50,30), pt(-45,5)], label: 'Curved base' }] },
+  K: { strokes: [{ path: [pt(-50,80), pt(-50,-80)], label: 'Vertical stem' }, { path: [pt(-50,0), pt(55,-80)], label: 'Upper diagonal' }, { path: [pt(-50,0), pt(55,80)], label: 'Lower diagonal' }] },
+  L: { strokes: [{ path: [pt(-50,-80), pt(-50,80)], label: 'Vertical stem' }, { path: [pt(-50,80), pt(50,80)], label: 'Base' }] },
+  M: { strokes: [{ path: [pt(-60,80), pt(-60,-80)], label: 'Left stem' }, { path: [pt(-60,-80), pt(0,0)], label: 'Left diagonal' }, { path: [pt(0,0), pt(60,-80)], label: 'Right diagonal' }, { path: [pt(60,-80), pt(60,80)], label: 'Right stem' }] },
+  N: { strokes: [{ path: [pt(-50,80), pt(-50,-80)], label: 'Left stem' }, { path: [pt(-50,-80), pt(50,80)], label: 'Diagonal stroke' }, { path: [pt(50,80), pt(50,-80)], label: 'Right stem' }] },
+  O: { strokes: [{ path: arcPts(0,0,80,0,360), label: 'Full oval', close: true }] },
+  P: { strokes: [{ path: [pt(-40,80), pt(-40,-80)], label: 'Vertical stem' }, { path: [pt(-40,-80), pt(30,-80), pt(55,-60), pt(55,-20), pt(30,0), pt(-40,0)], label: 'Top bump' }] },
+  Q: { strokes: [{ path: arcPts(0,0,80,0,360), label: 'Full oval', close: true }, { path: [pt(30,30), pt(65,70)], label: 'Tail' }] },
+  R: { strokes: [{ path: [pt(-40,80), pt(-40,-80)], label: 'Vertical stem' }, { path: [pt(-40,-80), pt(30,-80), pt(55,-60), pt(55,-20), pt(30,0), pt(-40,0)], label: 'Top bump' }, { path: [pt(-40,0), pt(55,80)], label: 'Leg diagonal' }] },
+  S: { strokes: [{ path: [pt(50,-55), pt(20,-80), pt(-20,-80), pt(-50,-55), pt(-50,-25), pt(0,0), pt(50,25), pt(50,55), pt(20,80), pt(-20,80), pt(-50,55)], label: 'S curve' }] },
+  T: { strokes: [{ path: [pt(-60,-80), pt(60,-80)], label: 'Top bar' }, { path: [pt(0,-80), pt(0,80)], label: 'Vertical stem' }] },
+  U: { strokes: [{ path: [pt(-50,-80), pt(-50,40), pt(-25,80), pt(25,80), pt(50,40), pt(50,-80)], label: 'U curve' }] },
+  V: { strokes: [{ path: [pt(-60,-80), pt(0,80)], label: 'Left diagonal' }, { path: [pt(0,80), pt(60,-80)], label: 'Right diagonal' }] },
+  W: { strokes: [{ path: [pt(-70,-80), pt(-35,80)], label: 'Far left diagonal' }, { path: [pt(-35,80), pt(0,-20)], label: 'Left inner' }, { path: [pt(0,-20), pt(35,80)], label: 'Right inner' }, { path: [pt(35,80), pt(70,-80)], label: 'Far right diagonal' }] },
+  X: { strokes: [{ path: [pt(-60,-80), pt(60,80)], label: 'Left diagonal' }, { path: [pt(60,-80), pt(-60,80)], label: 'Right diagonal' }] },
+  Y: { strokes: [{ path: [pt(-60,-80), pt(0,0)], label: 'Left arm' }, { path: [pt(60,-80), pt(0,0)], label: 'Right arm' }, { path: [pt(0,0), pt(0,80)], label: 'Stem' }] },
+  Z: { strokes: [{ path: [pt(-55,-80), pt(55,-80)], label: 'Top bar' }, { path: [pt(55,-80), pt(-55,80)], label: 'Diagonal' }, { path: [pt(-55,80), pt(55,80)], label: 'Bottom bar' }] }
+};
+
+const COLORS = ['#185FA5', '#0F6E56', '#993C1D', '#534AB7', '#3B6D11'];
+let animId = null, currentLetter = null;
+let canvas = null, ctx = null;
+
+function initCanvas() {
+  const container = document.getElementById('canvas-container');
+  container.innerHTML = '';
+  canvas = document.createElement('canvas');
+  canvas.id = 'letter-canvas';
+  canvas.width = W;
+  canvas.height = H;
+  container.appendChild(canvas);
+  ctx = canvas.getContext('2d');
+}
+
+function drawBackground() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+  ctx.lineWidth = 0.8;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath(); ctx.moveTo(0, H/2); ctx.lineTo(W, H/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2, 0); ctx.lineTo(W/2, H); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawGhost(letter) {
+  const def = DEFS[letter];
+  ctx.globalAlpha = 0.07;
+  ctx.strokeStyle = '#185FA5';
+  ctx.lineWidth = 16;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  def.strokes.forEach(s => {
+    ctx.beginPath();
+    s.path.forEach(([x, y], i) => i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y));
+    if (s.close) ctx.closePath();
+    ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function drawArrow([x, y], [px, py], color) {
+  if (px === undefined) return;
+  const angle = Math.atan2(y - py, x - px);
+  const size = 10;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x + size * Math.cos(angle), y + size * Math.sin(angle));
+  ctx.lineTo(x + size * Math.cos(angle + 2.4), y + size * Math.sin(angle + 2.4));
+  ctx.lineTo(x + size * Math.cos(angle - 2.4), y + size * Math.sin(angle - 2.4));
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawCompletedStrokes(letter, upTo) {
+  const def = DEFS[letter];
+  for (let i = 0; i < upTo; i++) {
+    const s = def.strokes[i];
+    const color = COLORS[i % COLORS.length];
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 13;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    s.path.forEach(([x, y], j) => j === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y));
+    if (s.close) ctx.closePath();
+    ctx.stroke();
+    drawArrow(s.path[s.path.length - 1], s.path[s.path.length - 2], color);
+  }
+}
+
+function animateLetter(letter) {
+  if (animId) cancelAnimationFrame(animId);
+  const def = DEFS[letter];
+  const strokes = def.strokes;
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = strokes.map((_, i) => `<div class="dot" id="dot-${i}"></div>`).join('');
+  document.getElementById('stroke-info').className = 'stroke-info';
+  document.getElementById('replay-btn').style.display = 'none';
+
+  let si = 0;
+
+  function updateDots() {
+    for (let i = 0; i < strokes.length; i++) {
+      const d = document.getElementById('dot-' + i);
+      if (!d) continue;
+      d.className = 'dot' + (i < si ? ' done' : i === si ? ' current' : '');
+    }
+  }
+
+  function runStroke() {
+    if (si >= strokes.length) {
+      const info = document.getElementById('stroke-info');
+      info.textContent = '✓ Complete!';
+      info.className = 'stroke-info complete';
+      document.getElementById('replay-btn').style.display = '';
+      return;
+    }
+    const stroke = strokes[si];
+    const path = stroke.path;
+    const color = COLORS[si % COLORS.length];
+    const totalSegs = path.length - 1;
+    let progress = 0;
+    const SPEED = 2.5;
+
+    document.getElementById('stroke-info').textContent = `Stroke ${si + 1} / ${strokes.length}: ${stroke.label}`;
+    updateDots();
+
+    function frame() {
+      progress += SPEED;
+      const done = progress >= totalSegs * 100;
+      const pf = Math.min(progress / 100, totalSegs);
+      const seg = Math.min(Math.floor(pf), totalSegs - 1);
+      const t = pf - Math.floor(pf);
+      const [x1, y1] = path[seg];
+      const [x2, y2] = path[Math.min(seg + 1, totalSegs)];
+      const cx = x1 + (x2 - x1) * (done ? 1 : t);
+      const cy = y1 + (y2 - y1) * (done ? 1 : t);
+
+      drawBackground();
+      drawGhost(letter);
+      drawCompletedStrokes(letter, si);
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 13;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      path.slice(0, seg + 1).forEach(([x, y], i) => i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y));
+      ctx.lineTo(cx, cy);
+      ctx.stroke();
+
+      if (!done) {
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.stroke();
+        animId = requestAnimationFrame(frame);
+      } else {
+        drawArrow(path[path.length - 1], path[path.length - 2], color);
+        si++;
+        setTimeout(runStroke, 380);
+      }
+    }
+    frame();
+  }
+
+  drawBackground();
+  drawGhost(letter);
+  runStroke();
+}
+
+// Build grid
+const grid = document.getElementById('grid');
+LETTERS.forEach(l => {
+  const card = document.createElement('div');
+  card.className = 'letter-card';
+  card.textContent = l;
+  card.setAttribute('aria-label', 'Draw letter ' + l);
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.letter-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    currentLetter = l;
+    document.getElementById('demo-title').textContent = 'Drawing letter';
+    document.getElementById('demo-badge').textContent = l;
+    initCanvas();
+    animateLetter(l);
+  });
+  grid.appendChild(card);
+});
+
+document.getElementById('replay-btn').addEventListener('click', () => {
+  if (currentLetter) {
+    document.getElementById('replay-btn').style.display = 'none';
+    initCanvas();
+    animateLetter(currentLetter);
+  }
+});
+</script>
+</body>
+</html>
