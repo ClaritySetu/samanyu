@@ -260,8 +260,8 @@ const DEFS = {
   ]},
   K: { strokes: [
     { path: [pt(-52, -82), pt(-52, 82)], label: 'Vertical stem' },
-    { path: [pt(55, -82), pt(-14, -28)], label: 'Upper arm' },
-    { path: [pt(-14, -28), pt(55, 82)], label: 'Lower leg' }
+    { path: [pt(55, -82), pt(-52, 0)], label: 'Upper arm' },
+    { path: [pt(-52, 0), pt(55, 82)], label: 'Lower leg' }
   ]},
   L: { strokes: [
     { path: [pt(-52, -82), pt(-52, 82)], label: 'Vertical stem' },
@@ -296,10 +296,15 @@ const DEFS = {
   ]},
   S: { strokes: [
     { path: [
-        // Fresh S logic: Start top-right, arc around upper bowl, transition through spine, arc around lower bowl
-        ...arc(CX + 12*S/100, CY - 42*S/100, 45*S/100, 40*S/100, -20, 190, 40),
-        ...arc(CX - 12*S/100, CY + 42*S/100, 45*S/100, 40*S/100, 10, -200, 40)
-      ], label: 'Continuous S-curve' }
+        pt(48, -82),   pt(-28, -82),  // top bar
+        pt(-44, -70),  pt(-52, -55),  // top-left chamfer (two steps)
+        pt(-52, -10),                 // upper-left stem
+        pt(-38, 0),    pt(38, 0),     // middle crossover (left entry, right exit)
+        pt(52, 10),                   // lower-right stem entry
+        pt(52, 55),                   // lower-right stem
+        pt(44, 70),    pt(28, 82),    // bottom-right chamfer (two steps)
+        pt(-48, 82)                   // bottom bar
+      ], label: 'S-curve' }
   ]},
   T: { strokes: [
     { path: [pt(-62, -82), pt(62, -82)], label: 'Top bar' },
